@@ -1084,3 +1084,88 @@ Syntax
 		END LOOP get_email;
 
 		CLOSE email_cursor;
+
+ 38.  ##### Flow Control Statements
+	
+	MySQL Does NoT Support `FOR` Loop
+	
+
+- ##### `CASE` Statement 
+	- Syntax
+
+			 CASE [ case_value ]
+			 WHEN search_condition THEN statement_list
+			[WHEN search_condition THEN statement_list] ...
+			[ELSE statement_list]
+			 END CASE
+	- Each _`statement_list`_ consists of one or more SQL statements; an empty _`statement_list`_ is not permitted.
+	- To handle situations where no value is matched by any `WHEN` clause, use an `ELSE` containing an empty [`BEGIN ... END`](https://dev.mysql.com/doc/refman/8.0/en/begin-end.html "13.6.1 BEGIN ... END Compound-Statement Syntax") block
+		
+			WHEN 2 THEN Select 2 ;				-- with    case_value
+			WHEN no = 2 THEN Select 2 ;			-- without case_value
+		
+- ##### IF Statements
+	
+		IF search_condition THEN statement_list
+		[ELSEIF search_condition THEN statement_list] ...
+		[ELSE statement_list]
+		END IF
+
+- Example
+	    
+		IF n > m THEN SET s = '>';
+		ELSEIF n = m THEN SET s = '=';
+		ELSE SET s = '<';
+		END IF;
+
+- ##### LOOP
+
+    	[begin_label:] LOOP
+    	    statement_list
+    	END LOOP [end_label]
+	- Loop is terminated with one of the following Ways
+		1. `LEAVE`  
+		2. `RETURN`
+	- Infinite Loop Allowed if terminating condition is not present.  
+	
+- ##### ITERATE 
+	
+		ITERATE label
+	
+	- Similar to `continue` in FOR LOOP as in case of OOP language.
+	- Means 'Start the Loop Again' . 
+
+- ###### LEAVE 
+
+		    LEAVE label
+	
+	- Similar to `break` in OOP language.
+
+- #### Sample 
+
+		CREATE PROCEDURE doiterate(p1 INT)
+		BEGIN
+		  label1: LOOP
+		    SET p1 = p1 + 1;
+		    IF p1 < 10 THEN
+		      ITERATE label1;
+		    END IF;
+		    LEAVE label1;
+		  END LOOP label1;
+		  SET @x = p1;
+		END;
+
+- ##### REPEAT
+
+    	[begin_label:] REPEAT
+    	    statement_list
+    	UNTIL search_condition
+    	END REPEAT [end_label]
+	- Executes Atleast Once.
+
+- ###### WHILE 
+
+		[begin_label:] WHILE search_condition DO
+		statement_list
+		END WHILE [end_label]
+	
