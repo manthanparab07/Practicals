@@ -1001,7 +1001,11 @@ Syntax
 		Select trigger_name , definer 
 		from triggers 
     	where definer NOT LIKE '%mysql%' ;
-
+		
+		-- or --
+		
+		show triggers ;
+		
 - ##### limitations
 
 	- Cannot USE CALL to call a trigger.
@@ -1180,3 +1184,140 @@ Syntax
 		statement_list
 		END WHILE [end_label]
 	
+
+39. > ##### VIEWS
+
+- Syntax 	
+		
+		CREATE
+		[OR REPLACE]
+		VIEW view_name [(column_list)]
+		AS select_statement ;
+
+- The view definition is “`frozen`” at creation time and is not affected by subsequent changes to the definitions of the underlying tables. i.e any changed made in the underlying table after view is created is not reflected in it.
+- `column_list`  allow to change the column name generated from `select_statement` and the this name is used to access the data from view .
+- Insert , Update command is allowed on view as long as the statement satisfies the underlying table(s) schema and constraints .
+- The Changes made are reflected back to the original table(s) they represent to.
+- `REPLACE` cannot be used without insert in view thus the query can be 
+		
+		CREATE OR REPLACE ....
+
+- > ##### DROP A VIEW
+
+	    DROP VIEW [IF EXISTS]
+        view_name [, view_name] ... ;
+	
+> ##### Constraints and Assertions 
+
+- An Assertion is just a special type of integrity Constraint
+- It is not necessarily dependent on a `single Base table` as simple Constraints are.
+- An SQL `Constraint` is a named rule which helps define valid sets of values by putting limits on the results of `INSERT`, `UPDATE` or `DELETE` operations performed on a Base table, an `Assertion`, by contrast, may define valid sets of values for individual rows or for an entire Base table.
+- There are four Constraint variations
+ 	- `UNIQUE` Constraints,
+ 	- `PRIMARY KEY` Constraints,
+ 	- `FOREIGN KEY` Constraints 
+ 	- `CHECK` Constraints.
+
+> #### An Assertion is a `CHECK` Constraint that may operate on multiple Tables.
+
+> #### `CHECK` are no longer supported in MySQL.
+
+- MySQL CONSTRAINTS can be classified into two types - column level and table level.
+
+- The column level constraints can apply only to one column where as table level constraints are applied to the entire table.
+
+- MySQL CONSTRAINT is declared at the time of creating a table.
+
+**MySQL CONSTRAINTs are :**
+
+*   NOT NULL
+*   UNIQUE
+*   PRIMARY KEY
+*   FOREIGN KEY
+*   CHECK
+*   DEFAULT
+
+The difference between assertions and checks is a little more murky, many databases including `MySQL` don't even support assertions.
+
+Any attempt to insert a value in the balance column of less than 100 would throw an error.
+
+**Assertions** \- An assertion is a piece of SQL which makes sure a condition is satisfied or it stops action being taken on a **database object**. It could mean locking out the whole table or even the whole database.
+
+	Syntax
+	CREATE ASSERTION assertion_name CHECK
+	( conditions );
+	
+> ##### Dynamic SQL
+
+- Dynamic SQL is used when then record to be searched or updated depends on user input or function or any other database objects.
+- This unknown entity in SQL Command is represented as '?'.
+- In MYSQL Dynamic SQL is Supported using `PREPARE`
+
+    	PREPARE stmt_name FROM 
+        'QUERY with runtime variable '?' '
+	
+- EX :
+		
+		PREPARE stmt from 
+		'Select * from artist                        
+		WHERE artist_name like ? ';
+
+- NOW TO EXECUTE THE COMMAND 
+
+		EXECUTE stmt_name USING @VAR , @VAR1 .... ;
+
+	- No of '?' inside the `PREPARE` statement and the variable passed must be equal.
+
+- DEALLOCATE AFTER USE
+	- THE `PREPARE` Statement allocates the memory for the sql query.
+
+*   [`PREPARE`](https://dev.mysql.com/doc/refman/8.0/en/prepare.html "13.5.1 PREPARE Syntax") prepares a statement for execution     
+*   [`EXECUTE`](https://dev.mysql.com/doc/refman/8.0/en/execute.html "13.5.2 EXECUTE Syntax") executes a prepared statement     
+*   [`DEALLOCATE PREPARE`](https://dev.mysql.com/doc/refman/8.0/en/deallocate-prepare.html "13.5.3 DEALLOCATE PREPARE Syntax") releases a prepared statement.
+
+> Using prepared statements with placeholders for parameter values has the following benefits:
+
+*   Less overhead for parsing the statement each time it is executed. Typically, database applications process large volumes of almost-identical statements, with only changes to literal or variable values in clauses such as `WHERE` for queries and deletes, `SET` for updates, and `VALUES` for inserts.
+    
+*   Protection against SQL injection attacks. The parameter values can contain unescaped SQL quote and delimiter characters.
+
+
+> FEATURES
+
+* A prepared statement is specific to the session in which it was created. If you terminate a session without deallocating a previously prepared statement, the server deallocates it automatically.
+
+* A prepared statement is also global to the session. If you create a prepared statement within a stored routine, it is not deallocated when the stored routine ends.
+
+> ###### CANNOT BE USED INSIDE A `PROCEDURE` OR `FUNCTION` .
+> 
+
+> #### DECLARE ... HANDLER Syntax
+
+- Syntax 
+
+    	DECLARE handler_action HANDLER
+    	    FOR condition_value [, condition_value] ...
+    	    statement
+    	
+    	handler_action: {
+    	    CONTINUE
+    	  | EXIT
+    	  | UNDO
+    	}
+    	
+    	condition_value: {
+    	    mysql_error_code
+    	  | SQLSTATE [VALUE] sqlstate_value
+    	  | condition_name
+    	  | SQLWARNING
+    	  | NOT FOUND
+    	  | SQLEXCEPTION
+    	}	
+
+- The _`handler_action`_ value indicates what action the handler takes after execution of the handler statement:
+
+*   `CONTINUE`: Execution of the current program continues.
+    
+*   `EXIT`: Execution terminates for the [`BEGIN ... END`](https://dev.mysql.com/doc/refman/8.0/en/begin-end.html "13.6.1 BEGIN ... END Compound-Statement Syntax") compound statement in which the handler is declared. This is true even if the condition occurs in an inner block.
+    
+*   `UNDO`: Not supported.
