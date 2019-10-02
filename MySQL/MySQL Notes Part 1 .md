@@ -316,6 +316,17 @@ Syntax
 
 - PRIMARY KEY creates a primary key and an index for you, KEY creates an `index` only.
 
+> #### Foreign key Syntax
+
+	[CONSTRAINT [symbol]] FOREIGN KEY
+	[index_name] (col_name, ...)
+	REFERENCES tbl_name (col_name,...)
+	[ON DELETE reference_option]
+	[ON UPDATE reference_option]
+    
+    reference_option:
+        RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT
+
 15. ##### AUTO_INCREMENT
 
      The AUTO_INCREMENT feature has the following requirements:

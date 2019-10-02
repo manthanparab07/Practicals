@@ -74,7 +74,7 @@ title: Database Concepts
 
 1. Each user should be able to change the way he or she views the data, and this change should not affect other users.
 
-2. A user’s interaction with the database should be independent ofstorage considerations involves hashing,indexing.. etc. 
+2. A user’s interaction with the database should be independent of storage considerations involves hashing,indexing.. etc. 
 
 3. The DBA should be able to change the database storage structures without affecting the users’ views.
 		
@@ -96,7 +96,7 @@ title: Database Concepts
 
 - The complete view of the database. This level describes what data is stored in the database and the relationships among the data.
 
-- This level contains the logical structure of the entire database as  seen by the DBA. It is a complete view of the data.
+- This level contains the logical structure of the entire database as  seen by the DBA. 
 
 - The conceptual level represents:
 		
@@ -162,23 +162,25 @@ title: Database Concepts
 
 - The data in the database at any particular point in time is called a database instance.
 
+![d00a1c91.png](attachments/d00a1c91.png)
+
 8. #### Data Definition Language ( DDL )
 	
 - It allows the DBA or the user to describe and name the entities,attributes along with integrity and other security constraints.
 
-- These commands are used to define and alter the structure of database and associated tables ...etc. It is not used to manipulate data.
+- These commands are used to define and alter the structure of database and associated tables ...etc. `It is not used to manipulate data`.
 
 - When a DDL command is executed a set of tables is created and it is stored in a special file collectively know as system catalog.
 
-- The system catalog integrates with the metadata which is describes the  objects in the database and contains the definition of records , data items and other objects .
+- The `system catalog` integrates with the `metadata` which is describes the  objects in the database and contains the definition of records , data items and other objects .
 
-- The DBMS consults with the system catalog before actual data is accessed from the database.- Data dictionary is used to describe the system catalog.
+- The DBMS consults with the system catalog before actual data is accessed from the database.- `Data dictionary` is used to describe the system catalog.
 
 9.  Data Manipulation Language ( DML )
 	
 - A language that provides a set of operations to support the basic data manipulation operations on the data held in the database.
 
-		> Insertion , Modification , Deletion , Retrieval.
+		> `Insertion , Modification , Deletion , Retrieval.`
 
 - Data manipulation applies to the external, conceptual, and internal levels.
 
@@ -191,7 +193,7 @@ title: Database Concepts
 	
 10. > ##### Data Model
 
-- Data Model are collection of concepts describing and manipulating data, relationship between data and constraints of data.
+- Data Model are` collection of concepts` describing and manipulating data, relationship between data and constraints of data.
 
 - It is a representation of real world object events and their associations.
 - The purpose of the data model is to represent data and make data   understandable. 
@@ -252,7 +254,7 @@ title: Database Concepts
 1. ##### Primary Key
 
     - Primary key is a set of one or more columns of a table that uniquely identify a record in a database table.
-    -  It can not accept null, duplicate values. 
+    -  It can not accept `null, duplicate` values. 
     -  Only one Candidate Key can be Primary Key.
      
 1. ##### Alternate key
@@ -269,11 +271,12 @@ title: Database Concepts
 1. ##### Unique Key
 
 	- A unique key is a set of one or more columns of a table that uniquely identify a record in a database table. 
-	- It is like Primary key but it can accept only one null value and it can not have duplicate values.
+	- It is like Primary key but it can `accept only one null` value and it can not have duplicate values.
     
 1. ##### Foreign Key
 
-	- Foreign Key is a field in a database table that is Primary key in another table. It can accept multiple null, duplicate values.
+	- Foreign Key is a field in a database table that is Primary key in another table. 
+	- It can accept `multiple` null, duplicate values.
 	- There can be multiple Foreign keys in a table.
 
 
