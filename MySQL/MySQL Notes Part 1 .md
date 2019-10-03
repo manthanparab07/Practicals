@@ -1297,7 +1297,9 @@ Any attempt to insert a value in the balance column of less than 100 would throw
 
     	DECLARE handler_action HANDLER
     	    FOR condition_value [, condition_value] ...
-    	    statement
+    	    BEGIN
+			-- query to be executed 
+			END ;
     	
     	handler_action: {
     	    CONTINUE
@@ -1321,3 +1323,16 @@ Any attempt to insert a value in the balance column of less than 100 would throw
 *   `EXIT`: Execution terminates for the [`BEGIN ... END`](https://dev.mysql.com/doc/refman/8.0/en/begin-end.html "13.6.1 BEGIN ... END Compound-Statement Syntax") compound statement in which the handler is declared. This is true even if the condition occurs in an inner block.
     
 *   `UNDO`: Not supported.
+
+- The HANDLER CODE is executed when the condition is occurred and based on the handler action appropriate action is taken ;
+- Ex. We can create a handler to display warning whenever a query is executed within a procedure i.e 
+		
+		create procedure proc()
+		BEGIN
+		DECLARE CONTINUE HANDLER FOR SQLWARNING
+			BEGIN
+				show warnings ;
+			END ; 
+		insert ignore into artist values (1211,"HADES"); -- duplicate entry
+		END;
+		//
