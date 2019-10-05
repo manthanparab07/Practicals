@@ -30,13 +30,13 @@ void func(int sockfd)
 
 int main() 
 { 
-	int sockfd, connfd; 
+	int sockfd; 
 	struct sockaddr_in servaddr, cli; 
 
 	// socket create and varification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
 	if (sockfd == -1) { 
-		printf("socket creation failed...\n"); 
+		printf("Socket creation failed...\n"); 
 		exit(0); 
 	} 
 	else
@@ -50,11 +50,11 @@ int main()
 
 	// connect the client socket to server socket 
 	if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr)) != 0) { 
-		printf("connection with the server failed...\n"); 
+		printf("Connection with the server failed...\n"); 
 		exit(0); 
 	} 
 	else
-		printf("connected to the server..\n"); 
+		printf("Connected to the server..\n"); 
 
 	// function for chat 
 	func(sockfd); 

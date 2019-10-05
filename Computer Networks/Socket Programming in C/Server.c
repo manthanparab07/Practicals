@@ -7,10 +7,10 @@
 
 #define MAX 80 
 #define PORT 8080 
-#define SA struct sockaddr 
+#define SA struct sockaddr 			// used for typecasting when bindinging
 
 // Function designed for chat between client and server. 
-void chatFunc(int sockfd) 
+void chatFunc(int connfd) 
 { 
 	char buff[MAX]; 	// to store message from client
 	int n; 				// for traversing buffer buff
@@ -21,7 +21,7 @@ void chatFunc(int sockfd)
 		bzero(buff, MAX); 		// empties the buffer
 
 		// read the message from client and copy it in buffer 
-		read(sockfd, buff, sizeof(buff)); 
+		read(connfd, buff, sizeof(buff)); 
 		
 		// print buffer which contains the client contents 
 		printf("From client: %s\t To client : ", buff); 
@@ -33,7 +33,7 @@ void chatFunc(int sockfd)
 		while ((buff[n++] = getchar()) != '\n') ; 
 
 		// and send that buffer to client 
-		write(sockfd, buff, sizeof(buff)); 	// read from standard input until enter('\n') is encountered.
+		write(connfd, buff, sizeof(buff)); 	// read from standard input until enter('\n') is encountered.
 
 		// if msg contains "Exit" then server exit and chat ended. 
 		if (strncmp("exit", buff, 4) == 0) { 
@@ -53,7 +53,7 @@ int main()
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 			// creating a TCP socket ( SOCK_STREAM )
 	
 	if (sockfd == -1) { 
-		printf("socket creation failed...\n"); 
+		printf("Socket creation failed...\n"); 
 		exit(0); 
 	} 
 	else
