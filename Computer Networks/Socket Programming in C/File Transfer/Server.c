@@ -1,49 +1,41 @@
+#include <stdlib.h> // for basic memmory allocation and deallocation
+#include <stdio.h> // for file read and write
 #include <netdb.h> 
 #include <netinet/in.h> 
-#include <stdlib.h> 
 #include <string.h> 
 #include <sys/socket.h> 
 #include <sys/types.h> 
 
-#define MAX 80 
+#define MAX 100
 #define PORT 8080 
-#define SA struct sockaddr 			// used for typecasting when bindinging
+#define SA struct sockaddr 
 
-// Function designed for chat between client and server. 
-void chatFunc(int connfd) 
+
+
+void sentFile(int sockfd) 
 { 
-	char buff[MAX]; 	// to store message from client
-	int n; 				// for traversing buffer buff
+	char buff[MAX]; 						// for read operation from file and used to sent operation 
 	
-	// infinite loop for chat 
-	for (;;) { 
+	// create file 
+	FILE *fp;
+	fp=fopen("mysqlScript.txt","r");		// open file uses both stdio and stdin header files
+											// file should be present at the program directory
+
+	if( fp == NULL ){
+		printf("Error IN Opening File .. \n");
+		return ;
+	}
 	
-		bzero(buff, MAX); 		// empties the buffer
-
-		// read the message from client and copy it in buffer 
-		read(connfd, buff, sizeof(buff)); 
-		
-		// print buffer which contains the client contents 
-		printf("From client: %s\t To client : ", buff); 
-		
-		bzero(buff, MAX); 		// empties the buffer
-		n = 0; 					
-		
-		// copy server message in the buffer 
-		while ((buff[n++] = getchar()) != '\n') ; 
-
-		// and send that buffer to client 
-		write(connfd, buff, sizeof(buff)); 	// read from standard input until enter('\n') is encountered.
-
-		// if msg contains "Exit" then server exit and chat ended. 
-		if (strncmp("exit", buff, 4) == 0) { 
-			printf("Server Exit...\n"); 
-			break; 
-		} 
-	} 
+	while ( fgets(buff,MAX,fp) != NULL )	// fgets reads upto MAX character or EOF 
+		write(sockfd,buff,sizeof(buff)); 	// sent the file data to stream
+	
+	fclose (fp);							// close the file 
+	
+	printf("File Sent successfully !!! \n");
+	
 } 
 
-// Driver function 
+
 int main() 
 { 
 	int sockfd, connfd, len; 				// create socket file descriptor 
@@ -53,7 +45,7 @@ int main()
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 			// creating a TCP socket ( SOCK_STREAM )
 	
 	if (sockfd == -1) { 
-		printf("Socket creation failed...\n"); 
+		printf("socket creation failed...\n"); 
 		exit(0); 
 	} 
 	else
@@ -96,9 +88,9 @@ int main()
 		printf("server acccept the client...\n"); 
 
 	// Function for chatting between client and server 
-	chatFunc(connfd); 
+	sentFile(connfd); 
 
-	// After chatting close the socket 
+	// After transfer close the socket 
 	close(sockfd); 
 } 
 
