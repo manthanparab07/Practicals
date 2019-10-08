@@ -24,8 +24,6 @@ void recvFile(int sockfd)
 	while( read(sockfd,buff,MAX) > 0 )
 		fprintf(fp,"%s",buff);
 	
-	
-	
 	printf("File received successfully !! \n");
 	printf("New File created is received.txt !! \n");
 
