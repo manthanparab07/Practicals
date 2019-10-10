@@ -999,7 +999,7 @@ Syntax
 - ##### Display ALL trigger
 
 		Select trigger_name , definer 
-		from triggers 
+		from information_schema.triggers 
     	where definer NOT LIKE '%mysql%' ;
 		
 		-- or --
