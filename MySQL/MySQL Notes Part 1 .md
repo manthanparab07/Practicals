@@ -996,7 +996,7 @@ Syntax
  	  In INSERT only NEW can be used.
  	  In DELETE only OLD can be used.
  	  In UPDATE both OLD and NEW can be used.
-- ##### Display ALl trigger
+- ##### Display ALL trigger
 
 		Select trigger_name , definer 
 		from triggers 
