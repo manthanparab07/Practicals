@@ -32,7 +32,7 @@ void func(int sockfd)
 int main() 
 { 
 	int sockfd; 
-	struct sockaddr_in servaddr, cli; 
+	struct sockaddr_in servaddr; 
 
 	// socket create and varification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
@@ -42,6 +42,7 @@ int main()
 	} 
 	else
 		printf("Socket successfully created..\n"); 
+	
 	bzero(&servaddr, sizeof(servaddr)); 
 
 	// assign IP, PORT 
