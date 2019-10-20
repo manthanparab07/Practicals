@@ -1,76 +1,68 @@
-#include <stdio.h>
-#include <sys/socket.h>
+#include <netdb.h>
 #include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
-#define MAX 1000
 #define PORT 8080
-#define SA struct sockaddr 
+#define MAX 30
+#define SA struct sockaddr
 
-void recvMsg( int sockfd , struct sockaddr_in serverAddr ){
-	
+void startChat(int sockfd , struct sockaddr_in servaddr){
 	char buff[MAX];
-	socklen_t addr_size = sizeof(serverAddr);
-	
-	
-	bzero(buff,MAX);
-	printf("File Name : ");
-	fgets(buff,MAX,stdin);
-		
-		/*Send message to server*/
-	sendto(sockfd,buff,strlen(buff),0,(SA*)&serverAddr,sizeof(serverAddr));
-		
-	if( strncmp("exit",buff,4) == 0 ){
-		printf("Exiting .." );
-		return ;
-	}
-		
-	FILE *fp;
-	fp=fopen("received.txt","w"); // stores the file content in recieved.txt in the program directory
-	bzero(buff,MAX);
-	
-	if( fp == NULL ){
-		printf("Error IN Opening File ");
-		return ;
-	}
-	
-	
-	if( recvfrom(sockfd,buff,MAX,0,(SA*)&serverAddr,&addr_size) < 0 ){
-	
-		printf("Error In Recieving Files");
-		return ;
-	
-	}
-	
-	if(fwrite(buff,1,strlen(buff),fp)<0)
-    {
-      printf("Error writting file\n");
-      return ;
-    }
-    
-	printf("File received successfully !! \n");
-	printf("New File created is received.txt !! \n");
+	int noBytes;
 
+		bzero(buff,sizeof(buff));
+		
+		printf("Enter Message : ");
+		bzero(buff,sizeof(buff));
+		noBytes = 0 ;
+		while((buff[noBytes++]=getchar()) != '\n');
+		noBytes = sendto(sockfd,buff,strlen(buff),0,(SA*)&servaddr,sizeof(servaddr));
+		if( noBytes <= 0 ){
+			printf("Error : In Sending..\n");
+			return;
+		}
+		bzero(buff,sizeof(buff));
+
+		FILE *fp = fopen("demo.txt","w");
+		if(fp == NULL){
+			printf("Error : In Opening File...\n");
+		} 
+
+		while( strncmp("exit",buff,4) != 0 ){
+			
+			bzero(buff,sizeof(buff));
+			noBytes = recvfrom( sockfd , buff , sizeof(buff) , 0 , NULL , NULL );
+			if( noBytes <= 0 ){
+				printf("Error : In Recieving..\n");
+				return;
+			}
+			fprintf(fp, "%s", buff);
+		}
+		fclose(fp);
+		printf("File Recieved Successfully..\n");
 }
 
-int main(){
+void main(){
+	int sockfd ;
+	struct sockaddr_in servaddr ;
 
-  int sockfd;
-  struct sockaddr_in serverAddr;
-  
-  /*Create UDP socket*/
-  sockfd = socket(PF_INET, SOCK_DGRAM, 0);
+	sockfd = socket(AF_INET,SOCK_DGRAM,0);
 
-  /*Configure settings in address struct*/
-  serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(PORT);
-  serverAddr.sin_addr.s_addr = htonl(INADDR_ANY); //inet_addr("127.0.0.1");
-  
-  memset(serverAddr.sin_zero, '\0', sizeof(serverAddr.sin_zero));  
+	if(sockfd == -1){
+		printf("Error : Socket Creations Failed..\n");
+		exit(0);
+	}else
+		printf("Socket Created..\n");
 
-  recvMsg(sockfd,serverAddr);
-  
-  close(sockfd);
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_port = htons(PORT);
+	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  return 0;
+	startChat(sockfd,servaddr);
+
+	close(sockfd);
 }
