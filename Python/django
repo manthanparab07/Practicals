@@ -1,0 +1,21 @@
+
+cd ./my_project
+
+pipenv shell
+
+pip install django
+
+python -m django --version
+
+django-admin
+
+django-admin startproject django_project
+
+cd ./django_project
+
+python manage.py runserver
+
+cd ./django_project/django_project
+
+python manage.py startapp blog
+

@@ -1,0 +1,127 @@
+------------------- File Handling Commands ------------
+
+	WildCard Characters :
+		
+		Use for files having particular sequence or pattern.
+		
+		List of Wildcards :
+			
+			1. * 				: All Characters
+			2. ?				: Single Characters
+			3. [ characters ]	: Set of Characters
+			4. [ !character ]	: Not in Set Of Characters
+			5. [ [ :class:] ]	: Belong to set of Character Class
+					alpha		: Alphabetic Characters
+					alnum		: Alphanumeric Characters
+					digit
+					lower
+					upper
+			
+			Examples :
+			
+			* 				All files
+			g* 				Any file beginning with “g”
+			b*.txt 			Any file beginning with “b” followed by	any characters 
+							and ending with “.txt”
+			Data??? 		Any file beginning with “Data” followed by exactly three
+							characters
+			[abc]* 			Any file beginning with either an “a”, a “b”, or a “c”
+			[[:upper:]]* 	Any file beginning with an uppercase letter
+			[![:digit:]]* 	Any file not beginning with a numeral
+			*[[:lower:]123] Any file ending with a lowercase letter or the numerals
+							 “1”, “2”, or “3”
+
+	1. mkdir - Create Directories
+		
+		mkdir dir1 dir2 dir3 ... 	: Creates dirN directories.
+		
+		To create Multiple Sub Directories : i.e dir/dir1/dir2..../dirN
+		
+			mkdir -p dir/dir1/dir2..../dirN
+			
+			-p 	--parents 	no error if existing, make parent directories as needed.
+	
+	2. cp    - Copy Files into Directories
+	
+		cp item1 item2 item3 .. directory 
+			
+		to copy complete directory in destination use -r ( --recursive ) OR -a ( --all )
+		without -r | -a subdirectories are ignored while copied . 	
+	
+		-i, --interactive	Before overwriting an existing file, prompt the user for
+							confirmation. If this option is not specified, cp will
+							silently overwrite files.
+		
+		-r, --recursive 	Recursively copy directories and their contents. This
+							option (or the -a option) is required when copying
+							directories.
+		
+		-u, --update 		When copying files from one directory to another, only
+							copy files that either don't exist, or are newer than the
+							existing corresponding files, in the destination
+							directory.
+		
+		-v, --verbose 		Display informative messages as the copy is
+							performed.( Only Displays Copied Element. )
+
+	3. mv 	- Move or renames the file/directory
+		
+		mv item_org item_fin			: to rename the file 
+		
+		mv item1 .. itemN directories 	: to move file from directories 
+
+		-i -r -u -v ---> Same As Above ...
+
+
+	4. rm 	- Removes item or Directories
+		
+		rm item item1 ....
+		
+		to remove complete directory -r must be specified
+		
+		-i     prompt before every removal
+		
+		
+		-i -r -v -u ---> same as above
+		
+		-f, --force 	Ignore nonexistent files and do not prompt. This
+						overrides the --interactive option.
+		
+	5. ln	- Create Hard And Symbolic Link
+		
+		ln -p file linkname	: To Create Hard Link ( Original Unix way of creating links )
+			
+		ln -s file linkname	: To Create Symbolic Link ( Mordern Way )
+		
+		Hard links have two important limitations:
+	
+		1.	A hard link cannot reference a file outside its own file system. 
+			This means a link cannot reference a file that is not on the same disk 
+			partition as the link itself.
+	
+		2. 	A hard link may not reference a directory.
+		
+		Symbolic links work by creating a special type of file 
+		that contains a text pointer to the referenced file or directory.
+		
+		Soft Link are used to overcome limitation of hard links.
+		
+			Advantage :
+				
+				1. File Directory Link Allowed.
+				
+			If target file name is specified no need to specify -r else it is
+			necessary to create links of file else broken links are formed.
+			
+			 -P, --physical
+              make  hard links directly to symbolic
+              links
+
+		   -r, --relative
+		          create  symbolic  links  relative  to
+		          link location
+
+		   -s, --symbolic
+		          make  symbolic  links instead of hard
+		          links
+

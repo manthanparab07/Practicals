@@ -1,0 +1,157 @@
+
+			------------	 Process	-----------
+
+	Operating systems are usually multitasking by doing more than one thing 
+	at once by rapidly switching from one executing program to another.
+	
+	The Linux kernel manages this through the use of processes.Processes are how
+	Linux organizes the different programs waiting for their turn at the CPU.
+	
+	How A Process Works
+	When a system starts up, the kernel initiates a few of its own activities as 
+	processes and launches a program called init. init, in turn, 
+	runs a series of shell scripts (located in /etc) called init scripts, 
+	which start all the system services. Many of these services are implemented as 
+	daemon programs, programs that just sit in the background and do their thing 
+	without having any user interface.
+	
+	The kernel maintains information about each process to help keep things organized.
+	For example, each process is assigned a number called a process ID or PID.
+	PIDs are assigned in ascending order, with init always getting PID 1.
+	
+	1. ps 	: Viewing Processes
+		
+		a snapshot of the machine's state at the moment the ps command is executed.
+		
+		TTY is short for “Teletype,” and refers to the controlling terminal for the
+		process.
+		The TIME field is the amount of CPU time consumed by the process.
+		
+	ps x
+		
+		Adding the “x” option shows all of our processes regardless of what terminal
+		(if any) they are controlled by.The presence of a “?” in the TTY column indicates
+		no controlling terminal. Using this option, we see a list of every process
+		that we own.
+		STAT is short for “state” and reveals the current status of the process:
+		
+		Process States :
+			State							Meaning
+			
+			R 									Running.
+			
+			S 						Sleeping. The process is not running; rather, it is 
+												waiting for an event,
+										such as a keystroke or network packet.
+			
+			D 						Uninterruptible Sleep. Process is waiting for
+											I/O such as a disk drive.
+			
+			T 						Stopped. Process has been instructed to stop.
+			
+			Z 						A defunct or “zombie” process. This is a child 
+											process that has terminated, 
+									but has not been cleaned up by its parent.
+			
+			< 						A high priority process i.e 
+										giving it more time
+										   on the CPU.
+			
+			N 						A low priority process. 
+		
+		
+	ps r      Restrict the selection to only running processes.	
+	
+	ps aux 	
+		
+		: This set of options displays the processes belonging to every user.
+		
+		USER 	User ID. This is the owner of the process.
+		
+		%CPU 	CPU usage in percent.
+		
+		%MEM 	Memory usage in percent.
+		
+		VSZ 	Virtual memory size.
+		
+		RSS 	Resident Set Size. The amount of physical memory (RAM) the
+					process is using in kilobytes.
+		
+		START 	Time when the process started. 
+					For values over 24 hours, a date is used.
+	
+	
+	2. top 	
+		
+		More dynamic view of the machine's activity.
+		
+		The top display consists of two parts: a system summary at the 
+		top of the display, followed by a table of processes sorted by CPU activity.
+	
+	
+	3. Controlling the process 
+	
+	
+		xlogo			-- Process Running along with terminal
+		xlogo &			-- Putting Process In Background.
+		xlogo 
+		
+		fg %n			-- Puts the n th job( %1 .. ) back into foreground -- terminal
+		
+		Ctrl Z			-- to STOP( PAUSE ) a foreground program by sending 
+							TSP( terminal stop ) signal 
+		
+		bg  %n			-- to resume the stopped program and move it to background
+		
+		jobs 	
+			:The shell's job control facility also gives us a way to list the 
+			jobs that have been launched from our terminal.
+		
+		
+		kill PID		-- kills a process by sending a signal to the program
+		
+		
+		If no signal is specified on the command line, then the TERM (Terminate) 
+		signal is sent by default.
+		The kill command is most often used to send the following signals:
+		
+		Number	Name	Meaning
+		
+		1		HUP		hangup
+		2 		INT		Ctrl-C terminates a program
+		3		QUIT	Quit
+		9		KILL	send to kernel to kill the process and no cleanup takes place
+		11		SEGV	Segmentation Voilation ( Illegal Memory Operation )
+		15		TERM	Terminate
+		18		CONT	Continue
+		19		STOP	Pause
+		20		TSTP	Terminal Stop( Ctrl-Z )  -- Program Can Ignore It
+		28		WINCH	Window Change.This is a signal sent by the system 
+						when a window changes size.
+		
+		
+		Ex. kill -HUP PID
+			kill -1	  PID
+		
+	4. Sending Signals To Multiple Processes With killall
+		
+		killall [-u user] [-signal] name...
+		
+		Ex. killall xlogo			--- kills all the process of xlogo
+		
+		
+	5. pstree 
+	
+		:	Outputs a process list arranged in a tree-like pattern showing
+			the parent/child relationships between processes.
+		
+	6. vmstat
+	
+		:	Outputs a snapshot of system resource usage including, memory,
+			swap and disk I/O. To see a continuous display, follow the
+			command with a time delay (in seconds) for updates.
+			
+			For example:
+			vmstat 5. Terminate the output with Ctrl-c.
+		
+		

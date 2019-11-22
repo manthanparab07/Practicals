@@ -1,0 +1,244 @@
+------------------- I/O Redirections -------------------- 
+
+	
+	I/O redirection allows us to change where output goes and where input comes from. 
+	Normally, output goes to the screen and input comes from the keyboard, but with I/O 
+	redirection, we can change that.
+	
+	screen 		- stdout
+	keyboard	- stdin
+	screen		- stderr
+	
+	1. Redirecting Standard Output ( > )
+		
+		I/O redirection allows us to redefine where standard output goes. To redirect 
+		standard output to another file instead of the screen, 
+		we use the “>” redirection operator followed by the name of the file.
+		
+		command > o/p file name
+	
+		Redirected output with the “>” redirection operator, the destination file is
+		always rewritten from the beginning.
+		
+		The redirection operator with no command preceding it will truncate an 
+		existing file or create a new, empty file.
+		
+		Redirected output with the “>>” redirection operator, the destination file is
+		appended .
+		
+	2. Redirecting Standard Error ( 2> )
+		
+		We must refer to its file descriptor. A program can produce output on any
+		of several numbered file streams. While we have referred to the first three of 
+		these file streams as standard input, output and error, the shell references 
+		them internally as file descriptors 0, 1 and 2, respectively.
+		
+		command 2> file name		
+		
+		to redirect both stdout and stderr :
+		
+		command &>  file name ( : overrite file )
+		
+		command &>> file name ( : appends  file )
+		
+		
+	3. Redirecting Standard Input ( < )
+		
+		
+		a) cat 	: Concatenate Files
+			
+			The cat command reads one or more files and copies them to standard output.
+			
+			cat file1 file2 ... fileN
+			
+			Uses :
+				
+				1. Allow To Combine Two Or More Files 
+					cat file1 file2 ... > cmbfile
+				
+				2. To Write on file through cmd line
+					
+					cat
+						does nothing and takes uses stdin and stderr until ^C
+					
+					cat > filename
+					
+						writes from stdin to filename until ^C
+					
+				3. cat filename
+					
+					Displays File Content i.e Word Processor
+				
+				4. Uses file as stdin 
+				
+						cat < filename		: Displays content on stdout
+						
+						mycommand $(< file.txt)
+						
+						: Takes the command arguments from the file ..
+						
+						Ex. ls $(< file.txt) 	: ( File Content : ./Academics ) 
+					
+
+	4. Pipelining( | ) :
+		
+		Ability to Send output of One Command To Act as a Input to Another.
+		The standard output of one command can be piped into the standard input 
+		of another.	
+
+		command1 | command2
+
+		Difference Between ( > ) and ( | )
+		
+		> connects o/p of one Command to a File
+		
+		| connects o/p of one Command to act as a i/p to another command. 
+		
+	
+	5. Filters :
+		
+		The Combinations of Commands That take input and then sort it then output it.
+		Pipelines are used to perform complex operations on data.
+			
+		1. sort
+			
+			To Produce a sorted List .
+			
+			command | sort | command | ... 
+		
+		
+			More Info in text processing.
+			
+		2. uniq - Report Or Omit Repeated Lines
+	
+			uniq -d 	: Gives Duplicate Lines
+
+		3. wc 
+		
+			The wc (word count) command is used to display the number of lines, words, 
+			and bytes contained in files.
+
+			wc [OPTION]... [FILE]...
+			
+			o/p : lineCount wordcount charactercounts filename
+			
+			-m, --chars
+              print the character counts
+
+       		-l, --lines
+              print the newline counts
+              
+            -w, --words
+              print the word counts
+	
+			-c, --bytes
+              print the byte counts
+              
+		4. grep 
+		
+		g/re/p (globally search a regular expression and print)
+		
+		It is used to find text patterns within files.
+			
+		grep searches text files for the occurrence of a specified regular 
+		expression and outputs any line containing a match to standard output.
+			
+			grep [options] regex [file...]
+			
+		where regex is a regular expression.
+			
+		grep options
+			
+			Options		 		Descriptions
+			
+				-i				--ignore-case
+				
+				-v				--invert-match	print every line that does not 
+												contain a match
+					
+				-c				--count
+				
+				-l				--files-with-matches Print the name of each file 
+													 that contains a match instead 
+													 of the lines themselves.
+					
+				-L				--files-without-match
+					
+				-n				--line-number
+		
+		Regular expression metacharacters consist of the following:
+	
+				^ $ . [ ] { } - ? * + ( ) | \
+			
+		to search these characters in files they must be enclosed in ''
+		to prevent any expansion as they have special meaning to shell.
+		
+		 grep --line-number '\$' ./demo_file.txt	: displays matching charcter line 
+		 
+		 grep --line-number '$' ./demo_file.txt 	: displays entire file
+		 	
+		
+	Anchors
+
+	The caret (^) and dollar sign ($) characters are treated as anchors in regular 
+	expressions. They cause the match to occur only if the regular expression is found 
+	at the beginning of the line (^) or at the end of the line ($):
+	
+		find ~  | grep 'zip$'				: Prints name starting with zip
+		find ~  | grep '^zip'
+		
+		grep -c '^$' ./Downloads/abc		: mathces all blank line
+		
+		grep -c '^lol$' ./Downloads/abc		: a line which contains only lol
+		
+	‘^$’ (a beginning and an end with nothing in between) will match blank lines.
+	
+	
+	Bracket Expressions And Character Classes
+	
+	(^) - used to indicate negation
+	(-) - used to indicate a character range.	[a-z]	[A-Z]	[0-9]
+	
+	The caret character only invokes negation if it is the first character within a 
+	bracket expression; otherwise, it loses its special meaning and becomes an ordinary 
+	character in the set.
+	
+	[^a-z]	: should not contain lowercase letter	equivalent to [abcde.......z]
+	
+		grep '^[a-z]..$' abc			: Searches for 2 letter world all 
+										  lowercase	in a line		
+	
+		grep '[^a-z]..$' abc			: Searches for line conatining only 
+										  Uppercase letters
+										 
+		grep -h '^[A-Za-z0-9]' dirlist*.txt
+		
+		ls ./[A-Z]*
+
+					
+	5. head / tail – Print First / Last Part Of Files
+		
+		tail [OPTION]... [FILE]...
+		head [OPTION]... [FILE]...
+		
+		Print  the  first  10 lines of each FILE to standard output.With more
+       	than one FILE, precede each with a header giving the file name.
+		
+		Ex. tail -n 5 filename
+
+	6. tee – Read From Stdin And Output To Stdout And Files
+		
+		The tee program reads standard input and copies it to
+		both standard output (allowing the data to continue down the pipeline) 
+		and to one or more files. This is useful for capturing a pipeline's contents
+		at an intermediate stage of processing.
+		
+		tee [OPTION]... [FILE]...
+		
+		
+		-a, --append
+              append to the given FILEs, do not overwrite
+
+
+
+					

@@ -1,0 +1,68 @@
+		----------------- Identifying Commands  ----------------------
+
+
+	Types of Commands :
+		
+		1. An Executable Program : ls , rm , mv ... ( /bin )
+		2. An Built-in Shell Commands : cd , type ..
+		3. Shell Function | Scripts
+		4. An Alias
+
+	
+	Identifying Commands
+		
+	1. TYPE 	: Display's Command Type
+	
+		type commands
+
+	2. WHICH	: Displays An Executable Location
+		
+		which commands
+			
+			Only Work for Executable Program not for Builtins , Shell Function , Alias
+	
+	3. HELP		: Display's Commands Documentation
+		
+		Syntax :
+			
+			for builtins 	: 		help commands
+			
+			for Executables :		commands --help ( Ex. mkdir --help )
+		
+		
+		help cd
+		
+		O/P
+			
+			cd: cd [-L|[-P [-e]]] [dir]		
+			...
+		
+		Notations :
+			
+			When square brackets appear in the description of a command's syntax, 
+			they indicate optional items. 
+			A vertical bar character indicates mutually exclusive items.
+	
+	4. man 		: Display's Program Manual Page		
+		
+		Most executable programs intended for command line use provide a formal piece of 
+		documentation called a manual or man page. A special paging program called man is 
+		used to view them. It is used like this:
+	
+		man command 		( Executable Commands i.e man mkdir )
+		
+		man uses less to display the manual page, so all of the familiar
+		less commands work while displaying the page.
+	
+	5. apropos	: Display's Appropriate Command for a given keyword
+	
+		apropos keywords
+	
+	6. whatis 	: Display A Very Brief Description Of A Command
+	
+		whatis command
+	
+	7. info 	: Display A Program's Info Entry
+		
+			info command
+	

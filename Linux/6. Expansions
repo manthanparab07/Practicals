@@ -1,0 +1,106 @@
+
+
+	1. echo – Display a line of text
+		
+		echo text
+		
+		echo * 				: Similar to ls command . 
+		
+		'*' expansion takes place.
+		
+		echo *s
+		echo D*
+		
+		echo /usr/*/share
+		
+		echo ~ 				: Prints Home Directory Path
+
+	2. Arithmetic Expansion
+	
+		$( ( expression ) )
+		
+		expression is an arithmetic expression consisting of values and arithmetic 
+		operators. 
+
+		Arithmetic expansion only supports integers (whole numbers, no decimals), 
+		but can perform quite a number of different operations.
+
+		Operator Supported :	+ - * / % **
+
+		Ex :
+		
+		echo Five divided by two equals $((5/2))
+
+	
+	3. Brace Expansion
+		
+		leading{pattern}trailing
+		
+		Patterns to be brace expanded may contain a leading portion called a preamble 
+		and a trailing portion called a postscript. The brace expression itself 
+		may contain either a comma-separated list of strings, or a range of integers
+		or single characters.
+
+		Ex. 
+		
+		echo No-{a,b,c}		No-a No-b No-c
+		echo No {a,b,c}		No a b c
+		echo No\ {a,b,c}	No a No b No c
+		
+		echo {1..3}			1 2 3
+		echo No{01..03}		No1 No2 No3 		// Padding Possible
+		
+		echo {a..c}			a b c				// displays Characters
+		echo {A..Z}
+		
+		Brace Expansion Can Be Nested 
+		
+		echo arr[{0..3}]			arr[0] arr[1] arr[3]
+		
+		mkdir dir{1..3} 			// Creates dir1 dir2 dir3 Directory
+		
+		
+	4. Parameter Expansion
+	
+		The variable named “USER” contains your username.		
+
+		echo $USER		: Displays the Username
+		
+		printenv 		: Displays All Variables used by the System
+
+
+	5. Command Substitution 
+	
+		command $( command2 )
+		
+		Ex :	echo $(ls)
+
+
+	6. Double Quotes 
+	
+		To print/use characters which have special meaning to shell i.e '$' '\' '`'
+
+		Ex 
+			
+			echo $100	 		00
+			echo "$100"		   $100
+		
+		parameter expansion, arithmetic expansion, and command substitution still
+		take place within double quotes:
+
+		Ex
+			
+			echo "$USER $((2+2)) $(cal)"
+		
+		Escape Character can be used to prevent command Execution and display special 
+		characters.
+		
+		echo "\$(ls)"		: $(ls)
+			
+	7. Single Quotes
+	
+		Same as Double Quotes BUT NO COMMAND Expansion takes place.
+		
+		echo '$USER'		$USER
+		
+		

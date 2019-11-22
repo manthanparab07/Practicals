@@ -1,0 +1,433 @@
+---------------------- Text Processing --------------------------------
+
+
+	● cat		– Concatenate files and print on the standard output
+	● sort		– Sort lines of text files
+	● uniq 		– Report or omit repeated lines
+	● cut 		– Remove sections from each line of files
+	● paste 	– Merge lines of files
+	● join 		– Join lines of two files on a common field
+	● comm 		– Compare two sorted files line by line
+	● diff 		– Compare files line by line
+	● patch 	– Apply a diff file to an original
+	● tr		– Translate or delete characters
+	● sed 		– Stream editor for filtering and transforming text
+	● aspell 	– Interactive spell checker
+
+	
+	1. sort[ options ] filename1 filename2 ... filenameN
+	
+		Used for sorting lines in a files.
+		
+		The sort program sorts the contents of standard input, or one or more files 
+		specified on the command line, and sends the results to standard output.
+	
+		
+		sort
+		
+		sort > file
+		
+		I above cases after giving input from terminal Use Ctrl-D to write into 
+		file else file will not be sorted and written into the file.
+		
+			sort file1.txt file2.txt file3.txt > final_sorted_list.txt
+		
+			Options 		Description
+			
+				-r			--reverse
+				
+				-n			--numeric-sort
+				
+				-f			--ignore-case
+				
+				-u			remove duplicate fields
+				
+				-k 			--key=field1[,field2] 	Sort based on a key field located
+													from field1 to field2 rather than the
+													entire line.
+		
+				-m 			--merge 				Treat each argument as the name
+													of a presorted file. Merge multiple
+													files into a single sorted result
+													without performing any additional
+													sorting.
+				
+				-o 			--output=file 			Send sorted output to file rather
+													than standard output.
+
+				-t 			--field-separator=char 	Define the field-separator
+													character. By default fields are
+													separated by spaces or tabs.
+		
+		A field can be considered as a space seperated name which can be used to 
+		sort a file.
+		
+		Ex:	df 
+					
+		Filesystem     1K-blocks    Used Available Use% Mounted on
+		udev             1887788       0   1887788   0% /dev
+		tmpfs             383604    6144    377460   2% /run
+		/dev/sda5       49279800 6753200  40000292  15% /
+		tmpfs            1918008     284   1917724   1% /dev/shm
+		tmpfs               5120       4      5116   1% /run/lock
+		tmpfs            1918008       0   1918008   0% /sys/fs/cgroup
+		tmpfs             383604      52    383552   1% /run/user/1000
+		/dev/sdb1        7554048       4   7554044   1% /media/hades/C479-2E1E
+		
+		Fields can be Filesystem , 1K-blocks , Used , Available ..
+		
+		--key=3 -n	Sort based on Used Memory( 3rd Field ) and Numeric Sort( -n ).
+		
+		-k 1,1 -k 3 Sort Line with first field only and then sort these line with
+					3rd field
+		
+		The key option allows specification of offsets within fields i.e
+			
+			Useful for sorting dates Ex DD/MM/YYYY file attrin. ... .
+			
+			-k 1.7n		:	numeric sort  first field w.r.t Year 
+			-k 1.4n		:	numeric sort  first field w.r.t Month 
+			-k 1.1n		:	numeric sort  first field w.r.t date ( default )
+		
+		If The Line are not space seperated or we want to sort using different 
+		file seperator other than space which is taken as default.
+		
+		Ex : 
+				head /etc/passwd | sort -t ':' -k 4n
+		
+		O/P
+			news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+			....
+		
+		To Sort these file we need different file seperator we can specify : by
+		using --field-seperator=':' or -t ':'
+		
+		
+	2. uniq
+	
+		It removes any duplicate lines and sends the results to standard output.
+		
+		uniq [ options ] filename1 ....
+		
+			Option 							Description
+		
+			-c 					Output a list of duplicate lines preceded by the 
+								number of times the line occurs.
+		
+			-d 					Only output repeated lines, rather than unique lines.
+		
+			-i 					Ignore case during the line comparisons.
+			
+			
+	Slicing And Dicing
+	
+		Peel columns of text out of files and recombine them in useful ways.
+			
+	3. cut 
+		
+		The cut program is used to extract a section of text from a line and output the 
+		extracted section to standard output. It can accept multiple file arguments or 
+		input from standard input.
+		
+		
+		cut Selection Options
+			Option 						Description
+			
+			-c char_list 	Extract the portion of the line defined by char_list.
+			
+			-f field_list 	Extract one or more fields from the line as defined by
+							field_list. The list may contain one or more fields or field
+							ranges separated by commas.
+			
+			-d delim_char 	When -f is specified, use delim_char as the field delimiting
+							character. By default, fields must be separated by a single 
+							tab character.
+			
+			--complement 	Extract the entire line of text, except for those portions
+							specified by -c and/or -f.	
+			
+			
+			cut -d ':' -f 1 /etc/passwd | head
+			
+	4.paste
+	
+	The paste command does the opposite of cut. Rather than extracting a column of text
+	from a file, it adds one or more columns of text to a file.
+	
+	It does this by reading multiple files and combining the fields found in each file 
+	into a single stream on standard output. Like cut, paste accepts multiple file 
+	arguments and/or standard input.
+	
+	Column by column additions take place i.e
+	
+		file 1				file 2
+		
+		A					a
+		B					b
+		C					c
+		D					d
+		
+		paste file1 file2
+		
+		A	a
+		B	b
+		C	c
+		D	d
+		
+		cat file1 file2
+		
+		A
+		B
+		C
+		D
+		a
+		b
+		c
+		d
+		
+		
+		-d, --delimiters=LIST
+              reuse characters from LIST instead of TABs
+		
+			Adds that character to join two fields.
+		
+			Ex. paste -d '-' file1 file2
+		
+			A-a
+			B-b
+			C-c
+			D-d
+		
+       -s, --serial
+              paste one file at a time instead of in parallel
+	
+			similar to that of cat file1 file2
+	
+	
+	5. join 
+	
+	-------------------------------------- Not Done ------------------------------------
+	
+	Comparing Text
+	
+	
+	6. comm
+	
+		comm - compare two sorted files line by line
+		
+		comm [OPTION]... FILE1 FILE2
+	
+		When FILE1 or FILE2 (not both) is -, read standard input.
+
+       With  no  options,  produce  three-column  output.  Column one contains
+       lines unique to FILE1, column two contains lines unique to  FILE2,  and
+       column three contains lines common to both files.
+		
+		
+		-n 		: to specify which columnn  to suppress
+		
+		-1     suppress column 1 (lines unique to FILE1)
+
+       	-2     suppress column 2 (lines unique to FILE2)
+
+       	-3     suppress column 3 (lines that appear in both files)
+
+
+	7. diff
+		
+		 diff is describing these differences to you, it's doing so in a prescriptive 
+		 context: it's telling you how to change the first file to make it match the 
+		 second file.
+		
+		diff is the creation of patches that are used by programs such as patch  to 
+		convert one version of a file to another version.
+		
+		
+		The first line of the diff output will contain:
+
+			1. line numbers corresponding to the first file,
+		
+			2. A letter (a for add, c for change, or d for delete), and
+		
+			3. line numbers corresponding to the second file.
+
+		Ex. 2,4c2,4" 
+		
+		means:  Lines 2 through 4 in the first file need to be changed to match 
+				lines 2 through 4 in the second file.
+				
+		To Represent in Another Format :
+			
+			Two of formats are context format and the unified format.
+		
+			-c	to display in context format
+			-u	to display in unified format
+			
+			
+		1. Context Format 
+			
+			The output begins with the names of the two files and their timestamps.
+			The first file is marked with asterisks and the second file is marked 
+			with dashes. Throughout the remainder of the listing, these markers 
+			will signify their respective files.
+			
+			
+			*** 1,4 ***		Equivalent to 1,4 of Standard Output for first file
+			--- 2,4 ---		Equivalent to 2,4 of Standard Output for Second file
+			
+			Equivalent Standard Output	::: 1,4c2,4
+			
+			Within a change group, lines begin with one of four indicators:
+			
+				Indicators 			Meaning
+				
+					blank			No Change
+					-				Line Delete . Appears Only In First File.
+					+				Line Added  . Appears Only In Second File.
+					!				A line changed.Appears in Both File
+			
+		2. Unified Format( -u )
+		
+			The duplicated lines of context are eliminated , making the results of 
+			the unified format shorter than those of the context format.
+			
+			first line of the format @@ -1,2 +1,3 @@ imply that 
+			
+			  Character			Meaning
+				blank 		Common to both file
+				- 			This line was removed from the first file.
+				+ 			This line was added to the first file.
+				
+	8. patch
+		
+		The patch program is used to apply changes to text files. 
+		It accepts output from diff and is generally used to convert older version 
+		of files into newer versions.
+		
+		It makes no sense for a contributor to send each developer an entire kernel 
+		source tree each time a small change is made. Instead, a
+		diff file is submitted. The diff file contains the change from the previous 
+		version of the kernel to the new version with the contributor's changes.
+		The receiver then uses the patch program to apply the change to his own
+		source tree.
+		
+		Using diff/patch offers two significant advantages:
+		
+			1. The diff file is very small, compared to the full size of the source tree.
+			
+			2. The diff file concisely shows the change being made, allowing reviewers 
+			   of the patch to quickly evaluate it.
+		
+		Syntax :
+			
+			diff -Naur old_file new_file > diff_file
+		
+		
+		Where old_file and new_file are either single files or directories containing 
+		files. 
+		The r option supports recursion of a directory tree.
+		u unified format
+		
+		
+		Once the diff file has been created, we can apply it to patch the old file 
+		into the new file:
+	
+					patch < diff_file
+		
+		We did not have to specify a target file to patch, as the diff file 
+		(in unified format) already contains the filenames in the header.
+		
+		
+			diff -Naur file1.txt file2.txt > patchfile.txt
+			patch < patchfile.txt
+	
+	
+	Editing On The Fly
+	
+		These are non-interactive ways to edit text as well.
+	
+	9. tr 	: translate or delete characters
+	
+		Sort of character based search and replace .
+		
+		tr [OPTION]... SET1 [SET2]
+		
+			-d, --delete			delete  characters  in  SET1,  do not translate
+			
+			-c, --complement 		replace/delete characters not in SET1
+			
+			-s	--squeeze-repeats	“squeeze” (delete) repeated instances of a character
+			
+		Transliteration is the process of changing characters from one alphabet
+		to another.
+		
+		Ex. lowercase to uppercase
+			
+			echo 'hello world' | tr a-z A-Z
+			
+			O/P   HELLO WORLD
+				
+				Replaces a-z chacter range with A-Z characters.
+			
+		tr operates on standard input, and outputs its results on standard output.
+		
+		tr accepts two arguments: 
+		A set of characters to convert from and a corresponding set of characters 
+		to convert to.
+		
+		Character sets may be expressed in one of three ways:
+			
+			1. An enumerated list. 		For example, ABCDEFGHIJKLMNOPQRSTUVWXYZ
+			2. A character range. 		For example, A-Z , a-z , 0-9
+			3. POSIX character classes. For example, [:upper:],[:digit:],[:alpnum:]
+			
+		Ex 
+			echo "aaabbbccc" | tr -s ab
+			echo "abcabcabc" | tr -s ab
+			
+			echo {a..z} | tr a-z 0-9
+			
+				0 1 2 3 4 5 6 7 8 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9	
+			
+			echo {a..z} | tr -d a-w
+			
+				x y z
+				
+		Applications : Text Encoding
+		
+			echo {a..z} | tr a-zA-Z n-za-mN-ZA-M
+		
+			n o p q r s t u v w x y z a b c d e f g h i j k l m
+		
+		To perform this encoding with tr:
+		
+			echo "secret text" | tr a-zA-Z n-za-mN-ZA-M
+			frperg grkg
+		
+		Performing the same procedure a second time results in the translation:
+		
+			echo "frperg grkg" | tr a-zA-Z n-za-mN-ZA-M
+			secret text
+		
+	10.  sed 	: stream editor
+	
+	------------------------------- NOT DONE -------------------------------------
+	
+	11. aspell	: spell checker
+	
+		Syntax
+				
+				aspell [options] <filename>
+			
+		Options 		Descriptions
+		
+		check	  Checks Misspelled world from the file and replace it file.
+		
+		list 	  Produce a list of misspelled words from standard input.
+		
+		By default, aspell will ignore URLs and email addresses in text.
+		This behavior can be overridden with command line options.
+		
+				
+		
+			

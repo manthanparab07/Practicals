@@ -1,0 +1,60 @@
+ ---------------- Linux Commands - Introductions ----------------------------
+ 
+ 	Basic Syntax : command -options arguments
+ 	
+ 		Multiple Options the -(option1option2...) 
+ 		
+ 		Ex. ls -alt ( OR ls -a -t -l ) 
+ 
+ 	1. pwd - Print Working Directory
+ 	
+ 	2. ls  - List The Contents of Directory
+ 	
+ 	   Shows the only visible content.
+ 	   
+		-a  --all 		to display All directories and hidden files too . 
+ 	  
+		-l 	 			display in long format
+ 		
+ 		-t    		 	sort  by  modification  time,  newest first
+
+ 		-r, --reverse 	everse order while sorting
+
+        -R, --recursive list subdirectories recursively
+
+ 		-1     			list one file per line.
+ 		
+ 		Two Ways :
+ 				
+ 				a) ls 			: list all content of cwd ( Alphabetical Order )
+ 				
+ 				b) ls path1  path2  path3 ... pathn  : list all contents from all paths
+ 				
+						ex. ls ~ ./doc	     : Display content from home and doc 	
+ 				
+ 
+	3. cd - Change Working Directory
+	
+		Two Ways :
+			
+			a) Aboslute Path :	'/path' - pathname begins with root directory till the 
+										  destination location/directory 
+			b) Relative Path :  
+					
+					Two Ways :
+						
+						a) './'  - w.r.t cwd
+						b) '../' - w.r.t parent directory of cwd
+			
+			cd Shortcuts :
+				
+				cd 		 : changes to home directory
+				cd ~	 : changes to home directory
+				cd -	 : changes to previously working directory
+	
+	4. file filename - Gives Short Description Of File and its extension
+				
+	5. less filename - displays Content of file in text format 				
+	
+	
+	

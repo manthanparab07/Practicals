@@ -1,0 +1,31 @@
+------------------- Create Your Own Alias -------------------	
+
+	
+	1. Executing Multiple Commands On Single line 
+		
+		cmd1 ; cmd2 ; cmd3 ; ............ ;
+		
+		seperate them with ; 
+		
+		Ex ls ; cd ./Acad ; man ls
+	
+	2. Creating own alias for Set of Commands OR Commands ...
+		
+		alias name=' commands ; ... ; '
+		
+		Structure alias name='string'
+		
+		Steps :
+			
+			a) Check Whether the alias name is not a command by
+				using type aliasname
+			
+			b) 	After the command “alias” we give alias a name followed immediately
+				(no whitespace allowed) by an equals sign, followed immediately by a 
+				quoted string containing the meaning to be assigned to the name.
+			
+			c) To remove an alias, the unalias command is used, like so:
+				
+				unalias name
+			
+			They vanish when your shell session ends.

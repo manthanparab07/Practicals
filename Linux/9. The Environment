@@ -1,0 +1,168 @@
+						-- The Environment	--
+	
+	
+	1. 
+	
+	The shell maintains a body of information during our shell session
+	called the environment.
+	
+	The shell stores two basic types of data in the environment.
+	They are environment variables and shell variables.
+	
+	Shell variables are bits of data placed there by bash, and environment variables are 
+	basically everything else. In addition to variables, the shell also stores some
+	programmatic data, namely aliases and shell functions.
+	
+	To see what is stored in the environment, we can use either the 'set' builtin 
+	in bash or the printenv program. 
+	
+	The set command will show both the shell and environment variables, 
+	while printenv will only display environment variables.
+	
+	set | less
+	
+	printenv
+	
+	to display specific environment variable 
+	
+		printenv var var1 ..		-- Ex. printenv USER PATH
+	
+	
+	To view the contents of a variable using the echo command
+	
+		echo $var_name		-- Ex. echo $HOME , echo $RANDOM
+	
+	
+	Some Variables :
+		
+		SHELL 	:	The name of your shell program.
+		HOME 	:	The pathname of your home directory.
+		PWD 	:	The current working directory.
+		USER 	:	Your username.
+		PS1 	:	Prompt String 1. This defines the contents of your shell prompt.
+					i.e ( $ or # 	: user or superuser )
+	2.
+		
+		How Is The Environment Established?
+	
+		When we log on to the system, the bash program starts, and reads a series of 
+		configuration scripts called startup files, which define the default environment 
+		shared by ALL users.
+		This is followed by more startup files in our home directory that define our 
+		PERSONAL environment.
+		The exact sequence depends on the type of shell session being started. 
+		
+		There are two kinds: a login shell session and a non-login shell session.
+		
+		A login shell session is one in which we are prompted for our username and 
+		password;when we start a virtual console session, for example. A non-login 
+		shell session typically occurs when we launch a terminal session in the GUI.
+	
+			Startup Files For LOGIN Shell Sessions :
+			
+				File				Contents
+			
+			/etc/profile  	:	A global configuration script that applies 
+								to all users.	
+			~/.bash_profile : 	A user's personal startup file.
+								Can be used to extend or override settings 
+								in the global configuration script.
+			~/.bash_login 	:	If ~/.bash_profile is not found, bash attempts to
+								read this script.
+			~/.profile 		:	If neither ~/.bash_profile nor ~/.bash_login
+								is found, bash attempts to read this file. This is the
+								default in Debian-based distributions, such as Ubuntu.
+			
+			Startup Files For Non-Login Shell Sessions
+			
+									File Contents
+			
+			/etc/bash.bashrc :	A global configuration script that applies to all users.
+			
+			~/.bashrc 		 :	A user's personal startup file. Can be used to extend or
+								override settings in the global configuration script.
+		
+	What's In A Startup File?
+		
+		~/.profile	
+		
+		Contents :
+		
+			# if running bash
+			if [ -n "$BASH_VERSION" ]; then
+				# include .bashrc if it exists
+				if [ -f "$HOME/.bashrc" ]; then
+				. "$HOME/.bashrc"
+				fi
+			fi
+
+			# set PATH so it includes user's private bin directories
+			PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+		
+		Purpose Of Execution Of Above Script.
+			
+			1. to get the content of .bashrc
+			2. to set the path variable 
+				
+			PATH is modified to add the directory $HOME/bin to the end of the list.
+	
+	Modifying the Environment
+		
+		1. Create a backup file of non-login shell user startup file( ~/.bashrc )
+			
+				cp .bashrc .bashrc.bak
+		
+		2. Open file 
+		
+		3. Add content at EOF
+			
+			# Change umask to make directory sharing easier
+			
+			umask 0002
+			
+			# Ignore duplicates in command history and increase
+			# history size to 1000 lines
+			
+			export HISTCONTROL=ignoredups
+			export HISTSIZE=1000
+			
+			# Add some helpful aliases
+			
+			alias l.='ls -d .* --color=auto'
+			alias ll='ls -l --color=auto'
+	
+		4. Activating Our Changes
+			
+			The changes we have made to our .bashrc will not take affect until 
+			we close our terminal session and start a new one, since the .bashrc 
+			file is only read at the beginning of a session. However, we can force 
+			bash to re-read the modified .bashrc file with the following command:
+			
+				source .bashrc
+			
+			Now new alias can be used in any terminal
+			
+		
+		
+		5. export variables_name
+		
+			Any Changes made to environment or shell variable is for that particular 
+			shell session only inorder to make these changes permanently export command
+			is used .
+			
+			export variable 
+			
+			this variable value is overriden in its respective login file and applies 
+			changes to all shell thereafter.
+			
+			Used in userdefined login file. ~/.bashrc
+			
+	
+	
+	
+	
+	
+	
+	
+	
+	

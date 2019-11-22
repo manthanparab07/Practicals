@@ -1,0 +1,70 @@
+mkdir ./my_project
+
+cd ./my_project
+
+pipenv install requests
+
+pipenv shell		-- Enter Into Virtual Env
+
+exit 				-- Exit Virtual Env
+
+pipenv run python 	-- run python in venv
+
+no need to exit environment as it's only for 
+python
+
+pipenv run pythonscript.py
+
+pipenv install -r ./...../requirements.txt
+
+pipenv lock -r 		--rebuild venv file
+
+
+pipenv install pytest --dev
+
+	install under developer packages.
+	
+
+pipenv uninstall requests
+
+
+pipenv --python 3.7 
+		
+	Creates venv specifying python version
+
+pipenv --rm
+	
+	Removes Virtual Environment
+
+pipenv --venv
+
+	
+	path of virtual env
+
+pipenv check
+
+	
+	Check For Security Issues	
+	
+pipenv install
+
+	
+	install changes from our pipfile 
+	If any changes are made in pipfile
+	and then to implement the changes 
+	use pipenv install
+	update for newer package updates
+	
+
+	
+	
+
+	
+	
+
+
+
+
+	
+
+

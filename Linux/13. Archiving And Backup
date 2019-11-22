@@ -1,0 +1,222 @@
+-------------------	Archiving And Backup ---------------------
+
+	file compression programs:
+	
+		● gzip 	– Compress or expand files
+		
+	The archiving programs:
+	
+		● tar – Tape archiving utility
+		● zip – Package and compress files
+		
+	And the file synchronization program:
+		● rsync – Remote file and directory synchronization
+		
+	1. Compressing Files
+	
+		Data compression is the process of removing redundancy from data.
+		
+		Compression algorithms fall into two general categories, lossless and lossy. 
+		
+		Lossless compression preserves all the data contained in the original. This 
+		means that when a file is restored from a compressed version, the restored file 
+		is exactly the same as the original, uncompressed version.
+		
+		Lossy compression, on the other hand, removes data as the compression is 
+		performed, to allow more compression to be applied. When a lossy file is 
+		restored, it does not match the original version; rather, it is a close 
+		approximation. Examples of lossy compression are JPEG and MP3 .
+
+
+	1.1 gzip , gunzip
+
+	The gzip program is used to compress one or more files. When executed, it replaces 
+	the original file with a compressed version of the original.
+	
+		gzip filenames ...
+		
+	The compressed file has the same permissions and timestamp as the original.Even 
+	after unziping permissions and timestamp are preserved.
+	
+	The corresponding gunzip program is used to restore compressed files to their 
+	original, uncompressed form.
+
+	gzip Options
+	
+			Option 						Description
+		
+			-d 			Decompress. This causes gzip to act like gunzip.
+			
+			-f 			--force compression even if a compressed version of the original 
+							file already exists.
+			
+			-l 			--list compression statistics for each file compressed.
+
+			-r 			If one or more arguments on the command line are directories,
+						recursively compress files contained within them. May also be
+						specified with --recursive.
+			
+			-v 			Display --verbose messages while compressing.
+			
+			-number 	Set amount of compression. number is an integer in the range of 1
+						(fastest, least compression) to 9 (slowest, most compression). 
+						The values 1 and 9 may also be expressed as --fast and --best,
+						respectively. The default value is 6.
+
+	2. Archiving Files
+
+		Archiving is the process of gathering up many files and bundling them together 
+		into a single large file. Archiving is often done as a part of system backups.
+
+	
+	tar	:	tape archive
+	
+	program for archiving files.
+	
+	filenames that end with the extension .tar or .tgz, which indicate a “plain” tar 	
+	archive and a gzipped archive, respectively. A tar archive can consist of 
+	a group of separate files, one or more directory hierarchies, or a mixture of both.
+
+			tar mode[options] pathname...
+		
+	IMP : pathname should be just the directory if /home/hades/../file specified
+		  then the tar file will contain as /home/hades/.. directories too and 
+		  inside it file would be located and same directory structure is created
+		  during extracting.	
+	
+		Mode 				Description
+		
+		c 		Create an archive from a list of files and/or directories.
+		x 		Extract an archive.
+		r 		Append specified pathnames to the end of an archive.
+		t 		List the contents of an archive.
+	
+	Additional attributes can be used with modes such as
+		
+		tar cf playground.tar /playground
+		
+		f :	to specify the name of the tar archive
+	
+	
+	To list the contents of the archive, we can do this:
+			
+			tar tf playground.tar
+	
+	IMP
+		
+		Can Specify the destination of the .tar file while archiving i.e
+		created in the same directory as of file.
+		
+		tar cf /media/hades/3878-E3AF/home.tar /home
+		
+		To Extract the tar file into new directory change directory and then 
+		specify the path.
+		
+			cd foo
+			tar xf ../playground.tar		OR tar xf ~/playground.tar ( path expansion )
+		
+		to Extract A Particular File / Directory from an archive 
+		
+			tar xf file.tar pathname
+			
+		By adding the trailing pathname to the command, tar will only restore the 
+		specified file.
+			
+		Multiple pathnames may be specified.The pathname must be the full, exact 
+		relative pathname as stored in the archive.		
+	
+	tar  with the --wildcards option.
+		
+		tar xf play.tar --wildcards 'play/dir-*/file-A'
+		
+		This command will extract only files matching the specified pathname including 
+		the wildcard dir-*.
+	
+	tar is often used in conjunction with find to produce archives.We will use find to 
+	produce a set of files to include in an archive:
+	
+		find ./ -name "*file-A" -exec tar rf play.tar '{}' ';'
+		
+	tar can also make use of both standard input and output. 
+	
+Ex
+	cd
+	find playground -name 'file-A' | tar cf - --files-from=- | gzip > playground.tgz
+	
+	In this example, we used the find program to produce a list of matching files and 
+	piped them into tar. If the filename “-” is specified, it is taken to mean standard
+	 input or output, as needed (By the way, this convention of using “-” to represent 
+	 standard input/output is used by a number of other programs, too.) 
+	 The --files-from option (which may also be specified as -T) causes tar to read its 
+	 list of pathnames from a file rather than the command line. Lastly, the archive 
+	 produced by tar is piped into gzip to create the compressed archive playground.tgz. 
+	 The .tgz extension is the conventional extension given to gzip-compressed tar 
+	 files. The extension .tar.gz is also used sometimes.
+	 
+	
+	
+	3. zip 
+		
+		The zip program is both a compression tool and an archiver.
+	 
+	 	zip options zipfile file...
+	 	
+	 	Ex. zip -r playground.zip playground
+	 
+	 Unless we include the -r option for recursion, only the playground directory 
+	 (but none of its contents) is stored.
+	 
+	 Extracting the contents of a zip file is straightforward when using the unzip 
+	 program
+	 
+	 	cd foo
+		unzip ../playground.zip
+	
+	Using the -l option causes unzip to merely list the contents of the archive without 
+	extracting the file. If no file(s) are specified, unzip will list all files in the 
+	archive. The -v option can be added to increase the verbosity of the listing.
+	
+	It is possible to pipe a list of filenames to zip via the -@ option:
+	
+		find ./play/ -name "*A" | zip -@ fdfd.zip
+		
+	
+	4. Synchronizing Files And Directories using rsync
+	
+	For maintaining a backup copy of a system involves keeping one or more directories 
+	synchronized with another directory (or directories) located on either the local 
+	system (usually a removable storage device of some kind) or a remote system.
+	
+	This program can synchronize both local and remote directories by using the rsync 
+	remote-update protocol,
+	which allows rsync to quickly detect the differences between two directories and 
+	perform the minimum amount of copying required to bring them into sync.
+	
+		rsync options source destination
+		
+	where source and destination are one of the following:
+	
+	● A local file or directory
+	● A remote file or directory in the form of [user@]host:path
+	● A remote rsync server specified with a URI of rsync://[user@]host[:port]/path
+	
+	Note that either the source or the destination must be a local file.
+	
+			Options						Descriptions
+	
+			-a 				causes recursion and preservation of sub directories .
+			-v				verbose output
+			
+			--delete		remove files that may have existed on the backup device that 
+							no longer existed on the source device
+	
+	Ex :
+		 /media/BigDisk/backup
+		 sudo rsync -av --delete /etc /home /usr/local /media/BigDisk/backup
+
+	
+	In this example, we copied the /etc, /home, and /usr/local directories from our 	
+	system to our imaginary storage device.
+	
+	
+	

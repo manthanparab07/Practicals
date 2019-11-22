@@ -1,0 +1,872 @@
+------------------------ Scripting ----------------------------------
+
+	A shell script is a file containing a series of commands.
+	
+	To successfully create and run a shell script, we need to do three things:
+		
+		1. Write A Script
+		2. Make the Script Executable
+		3. Put the script somewhere the shell can find it.
+		
+	The shell automatically searches certain directories for executable files when 
+	no explicit pathname is specified. For maximum convenience, we will place 
+	our scripts in these directories.
+	
+	
+	Script File Format
+		
+		#!/bin/bash
+		
+		# Comments
+		
+		Commands
+		
+		The #! character sequence called a shebang. The shebang is used to tell the
+		system the name of the interpreter that should be used to execute the script
+		that follows.
+
+		Every shell script should include this as its first line.
+	
+	Executable Permissions
+	
+		Using chmod command change to execute. ( 700 755 ) 
+	
+		Scripts must be readable in order to be executed.
+	
+	Script File Location And Executing A Script
+	
+		To Execute a script its path must be specified ./file or absolute path
+		
+				./script_file
+				
+				script_file				# Error No Command Found
+	
+		As it will be interpreted as command if explicit path is not specified 
+		the shell searches for predefined directories which are present in 
+		path variable.
+		
+			echo $PATH
+			
+		If the script is present in the path specified in $PATH then it can be 
+		executed without specifying explicit path.
+		
+			mkdir bin
+			mov ./demo_script ./bin
+			demo_script
+			
+		If the PATH variable does not contain the directory, we can easily add it by 
+		including this line in our .bashrc file:
+				
+				export PATH=~/bin:"$PATH"
+
+		After this change is made, it will take effect in each new terminal session.
+		To apply the change to the current terminal session, we must have the shell 
+		reread the .bashrc file.
+
+		This can be done by “sourcing” it:
+				
+				[me@linuxbox ~]$ . .bashrc
+		
+		The dot (.) command is a synonym for the source command, a shell builtin
+		which reads a specified file of shell commands and treats it like input
+		from the keyboard.
+	
+		In the interests of reduced typing, short options are preferred
+		when entering options on the command line, but when writing scripts,
+		long options can provide improved readability.
+		
+		i.e 
+				ls -al				# Commands In Shell recommended
+				
+				ls --all --long		# In Shell Script
+		
+		
+		Ex. 
+				
+		find playground \( -type f -not -perm 0600 -exec
+		chmod 0600 ‘{}’ ‘;’ \) -or \( -type d -not -perm 0700 -exec chmod
+		0700 ‘{}’ ‘;’ \)
+
+
+		Obviously, this command is a little hard to figure out at first glance.
+		In a script, this command might be easier to understand if written this way:
+			
+			find playground \
+			\( \
+			-type f \
+			-not -perm 0600 \
+			-exec chmod 0600 ‘{}’ ‘;’ \
+			\) \
+			-or \
+			\( \
+			-type d \
+			-not -perm 0700 \
+			-exec chmod 0700 ‘{}’ ‘;’ \
+			\)
+			
+		Assigning Values To Variables
+		
+			variable=value
+		
+		Multiple variable assignments may be done on a single line.
+		During expansion, variable names may be surrounded by optional curly 
+		braces “{}”.This is useful for interpretation like :
+			
+			mv $filename ${filename}1
+			
+			
+	Shell Function
+	
+		Shell functions are “mini-scripts” that are located inside other scripts and 
+		can act as autonomous programs.
+
+		Shell functions have two syntactic forms:
+		
+		function name {
+		
+			commands
+			return
+		
+		}
+		
+		OR
+		
+		name () {
+		
+			commands
+			return
+		
+		}
+		
+		A function must be defined before it is called and has lifetime equal to 
+		that of script i.e we cannot call after the script is executed.
+		
+		A function can have no commands but return is must.
+		
+		$( func )		: the O/P of func is fed to $ .
+		
+	
+	Local Variables
+
+		In the scripts , all the variables have been global variables.
+		Global variables maintain their existence throughout the program. 
+		
+		Having local variables allows the programmer to use variables with names that 	
+		may already exist, either in the script globally or in other shell functions, 	
+		without having to worry about potential name conflicts.
+		
+		function fun {
+		
+			local var
+			return 
+			
+		}
+		
+		local variables are defined by preceding the variable name with the word
+		local.
+		
+	Conditional Statements
+	
+		if commands; then
+		
+			commands
+		
+		[elif commands; then
+		
+			commands...]
+		
+		[else
+		
+			commands]
+		
+		fi
+		
+		Ex. 
+			
+			read var
+	
+			if [ $var -eq 0 ]	; then
+		
+				echo 'Zero'
+	
+			elif [ $var -eq 10 ] ; then
+		
+				echo ' TEN '
+	
+			else
+	
+				echo 'Non Zero'
+	
+			fi	
+		
+	Exit Status and exit command
+	
+		A return value which determine whether the command has been successfully
+		executed or not .
+		
+		A Zero Value indicates successful execution whereas non-zero represents 
+		failure generally representing error codes.
+		
+		The shell provides a parameter that we can use to examine the exit status.
+		
+		
+		ls
+		$?		:	return exit status of ls command executed.
+		
+		
+		echo $?		: display the exit code generated due to execution of previous 
+					  commands.
+		
+		
+		To set this value, the shell provides two extremely simple builtin commands
+		that do nothing except terminate with either a zero or one exit status.
+		
+		true 	: sets exit status to 0
+		false	: sets exit status to 1
+		
+		
+		Ex.
+			
+			if true; then echo "It's true."; fi
+		
+		exit [ arg ]
+		
+		The exit command accepts a single, optional argument, which becomes the 
+		script’s exit status.
+		When no argument is passed, the exit status defaults to the exit status of the 
+		last command executed. Using exit in this way allows the script to indicate 
+		failure.
+		
+			
+	test 
+	
+			test expression 
+		
+		or 
+		
+			[ expression ]
+		
+		expression is evaluated as either true or false.
+		
+		test result is can be displayed as exit status.
+		
+		Ex. 
+				
+				test -e file		: [ -e file ]
+				echo $?				: displays result of test command
+		
+		test File Expressions
+		
+		Expression				Is True If:
+		file1 -ef file2		Both of them are same file through links
+		file1 -nt file2 	file1 is newer than file2.
+		file1 -ot file2 	file1 is older than file2.
+		-d file 			file exists and is a directory.
+		-e file 			file exists.
+		-f file 			file exists and is a regular file.
+		-L file 			file exists and is a symbolic link.
+		-r file 			file exists and is readable (has readable permission for
+				 											the effective user).
+		-w file 			file exists and is writable (has write permission for the
+																effective user).
+		-x file 			file exists and is executable (has execute/search
+													permission for the effective user).
+		
+		Ex.
+		
+		FILE=~/.bashrc
+
+		if [ -e "$FILE" ]; then
+		
+		# "" not necessary but used to prevent the from error if variable if FILE
+		  is null thus inside "" it will always be considered null string if 
+		  var is not supplied .
+		
+	return arg	
+	
+		Shell functions can return an exit status by including an integer argument
+		to the return command.
+	
+	String Expressions
+	
+		Expression 			Is TRUE if	
+		
+		string 				string is not null	
+		-n string 			The length of string is greater than zero.
+		-z string 			The length of string is zero.
+		string1 == string2 	string1 and string2 are equal. 
+		string1 != string2 	string1 and string2 are not equal.
+		string1 > string2 	string1 sorts after string2.
+		string1 < string2 	string1 sorts before string2.	
+		
+		Warning: the > and < expression operators must be quoted (or escaped with a
+		backslash) when used with test. If they are not, they will be interpreted by
+		the shell as redirection operators, with potentially destructive results.
+		
+	Integer Expressions
+	
+		Expression 			Is TRUE if	
+		
+		no1 -eq no2 	no1 is equal to no2.
+		no1 -ne no2 	no1 is not equal to no2.
+		no1 -le no2 	no1 is less than or equal to no2.
+		no1 -lt no2 	no1 is less than no2.
+		no1 -ge no2 	no1 is greater than or equal to no2.
+		no1 -gt no2 	no1 is greater than no2.
+		
+	Modern Version Of test
+		
+		[[ expression ]]
+	
+	
+	It adds an important new string expression:
+
+		string1 =~ regex
+	
+	which returns true if string1 is matched by the extended regular expression regex. 
+	
+	Important for performing such tasks as data validation .i.e for checking the entered
+	data is INT or path specified is valid .
+	
+		[[ "$INT" =~ ^-?[0-9]+$ ]] 			: Check for INT type data
+	
+	[[ ]] is that the == operator supports pattern matching the same way 
+	pathname expansion does.
+	
+	
+		if [[ $var == boo.* ]] ; then 
+	
+			echo 'Pattern Matches'
+	
+		fi
+	
+	(( )) is used to perform arithmetic truth tests and operates on integer data.
+	
+		(( integer expression ))
+	
+		ex. 
+			
+			(( $var == 0 ))			: Valid
+			((  var == 0 ))			: Valid
+		
+		As it only deals with integers variables can be accessed without $
+		regular sign can be used such as > < == rather than -eq -le  -lt ..
+		
+	Combining Expressions
+	
+	They are AND, OR and NOT. test and [[ ]] use different operators to 
+	represent these operations :		 
+	
+		Logical Operators
+		Operation 	test [] 	[[ ]] and (( ))
+		AND 		-a 				&&
+		OR 			-o 				||
+		NOT 		! 				!
+	
+	
+	Since all expressions and operators used by test are treated as command arguments by
+	the shell (unlike [[ ]] and (( )) ), characters which have special meaning to bash,
+	such as <, >, (, and ), must be quoted or escaped.
+	
+	
+	Control Operators: Another Way To Branch
+	
+		command1 && command2
+		
+		command1 || command2
+		
+		With the && operator, command1 is executed and command2 is executed if,
+		and only if, command1 is successful. With the || operator, command1 is 
+		executed and command2 is executed if, and only if, command1 is unsuccessful.
+	
+	Ex.	mkdir temp && cd temp
+		
+		This will create a directory named temp, and if it succeeds, the current working 
+		directory will be changed to temp. The second command is attempted only if the 
+		mkdir command is successful.
+		
+		[ -d temp ] || mkdir temp
+		
+		will test for the existence of the directory temp, and only if the test fails, 
+		will the directory be created.
+	
+	read – Read Values From Standard Input
+	
+		The read builtin command is used to read a single line of standard input. This 
+		command can be used to read keyboard input or, when redirection is employed, a 
+		line of data from a file. The command has the following syntax:
+	
+		read [-options] [variable...]
+
+		If no variable name is supplied, the shell variable REPLY contains 
+		the line of data.
+	
+			echo -n "Please enter an integer -> "
+			read int
+		
+		-n option (which suppresses the trailing newline on output)
+		
+		read can assign input to multiple variables.
+		
+			read var var1 var2 ..
+		
+		If no variables are listed after the read command, a shell variable, REPLY, will 
+		be assigned all the input.
+		
+				read
+				echo $REPLY
+		
+			Options						Descriptions
+			
+			-a array			Assign the input to array, starting with index zero.
+			
+			-d delimiter 
+			
+			-e 					Use Readline to handle input. This permits input editing
+								in the same manner as the command line.
+			
+			-i string 			Use string as a default reply if the user simply presses
+								Enter. Requires the -e option.
+			
+			-n num 				Read num characters of input, rather than an entire line.
+			
+			-p prompt 			Display a prompt for input using the string prompt.
+			
+			-s Silent mode. 	Do not echo characters to the display as
+								they are typed. This is useful when inputting passwords
+								and other confidential information.
+			
+			-t seconds 			Timeout. Terminate input after seconds. read returns a
+								non-zero exit status if an input times out.
+			
+			-u fd 				Use input from file descriptor fd, rather than standard
+								input.
+	
+	IFS
+	
+		The shell performs word splitting on the input provided to read.
+		Multiple words separated by one or more spaces become separate	items 
+		on the input line, and are assigned to separate variables by read.
+		
+	Ex. read var var1
+		Hello World
+		
+		$var 	:	Hello
+		$var1	:	World
+		
+		This behavior is configured by a shell variable named IFS 
+		(for Internal Field Separator). The default value of IFS contains a space,
+		a tab, and a newline character, each of which will separate items from
+		one another.
+		
+			IFS=':' read var1 var2
+			hello:world
+				
+				$var1 	:	Hello
+				$var2	:	World
+		
+			The shell allows one or more variable assignments to take place immediately 
+			before a command. These assignments alter the environment for the command 
+			that follows. The effect of the assignment is temporary; only changing the 
+			environment for the duration of the command.
+			
+		If IFS was redeclared seprately then its effect will be for all read command
+		after the initialization.
+		
+			IFS=':'
+			read a b c
+			read c d e
+			.
+			.
+			.
+			
+		Cannot Pipe read 
+				
+				echo "Enter" | read
+				
+			pipelines create subshells. These are copies of the shell and its 	
+			environment which are used to execute the command in the pipeline.
+			A subshell can never alter the environment of its parent process.
+			As a result the REPLY of subshell gets destroyed once subshell is 
+			destroyed and the parent process resumes executing.
+		
+	Looping
+		
+		for loop
+		
+			for variable [in words]; do
+			
+				commands
+			
+			done
+		
+		Ex. for i in {1..10} ; do echo $i ; done
+		
+		Where variable is the name of a variable that will increment during 
+		the execution of the loop, words is an optional list of items that will be
+		sequentially assigned to variable.
+		
+		pathname expansion possible 
+			
+			for i in distros*.txt; do echo $i; done
+		
+		while loop
+		
+			An while loop continues until it receives a non zero exit status.
+			
+			Syntax :
+				
+				while command ; do
+					
+					commands
+				
+				done
+		
+		until loop
+		
+			An until loop continues until it receives a zero exit status.
+			
+			Syntax :
+				
+				until command ; do
+					
+					commands
+				
+				done
+		
+	Breaking out of the loop 
+	
+		continue 
+		break
+	
+	
+	Redirection from loops
+		
+		To Redirect Standard Input Output Error Stream use redirection operator 
+		at the end of the done statement i.e.
+		
+			while command ; do
+				
+				commands
+			
+			done > file
+		
+		It is also possible to pipe standard input into a loop.
+		it is important to remember that since a pipe will execute the loop in a 
+		subshell, any variables created or assigned within the loop will be lost when 
+		the loop terminates.
+		
+	case in bash
+	
+		case word in
+			[pattern [| pattern]...) commands ;;]...
+			esac
+			
+		Pattern					Description
+		
+			a)					Matches if word equals “a”.
+  [[:alpha:]])					Matches if word is a single alphabetic character.
+	   	  ???)  				Matches if word is exactly three characters long.
+		*.txt)					Matches if word ends with the characters “.txt”.
+			*)					Matches any value of word. Just Like default
+			
+			
+		Ex :
+		
+			case $REPLY in
+				
+				0)
+				echo "Program terminated."
+				exit
+				;;
+				
+			esac
+	
+	
+	Positional Parameters && Accessing The Command Line
+		
+		The shell provides a set of variables called positional parameters that
+		contain the individual words on the command line.
+		The variables are named 0 through 9.
+	
+		Ex :
+			
+			#!/bin/bash
+			# posit-param: script to view command line parameters
+			echo " No Of Arguments : $#
+			\$0 = $0
+			\$1 = $1
+			\$2 = $2
+			\$3 = $3
+			\$4 = $4
+			\$5 = $5
+			\$6 = $6
+			\$7 = $7
+			\$8 = $8
+			\$9 = $9
+			"
+	
+	$0 access first command line arg .. and so on
+	
+	Even when no arguments are provided, $0 will always contain the first item
+	appearing on the command line, which is the pathname of the program being executed.
+	
+	You can actually access more than nine parameters using parameter expansion.
+	To specify a number greater than nine, surround the number in braces.
+	For example ${10}, ${55}, ${211}, and so on.	
+	
+	Determining The Number of Arguments
+		
+		The shell also provides a variable, $#, that yields the number of arguments 
+		on the command line.
+	
+	shift – Getting Access To Many Arguments
+	
+		Each time shift is executed, the value of $2 is moved to $1, the value of $3 is 
+		moved to $2 and so on. The value of $# is also reduced by one.
+		
+		while (( $# > 0 )) ; do
+
+			echo "Arguments : $1 "
+			shift
+
+		done 
+		
+	Passing Positional Parameters from shell function to another
+	
+		Passing argument to shell function
+			
+			func_name arg arg1 ....
+		
+		Stored in $1 $2 ... ${n}
+		
+		A function can pass all arguments which were provided to it during call
+		to another function using one of the two ways:
+		
+			$*
+			$@
+		
+		Useful For Wrapper Functions .
+		
+	The * And @ Special Parameters
+	
+	Parameter 							Description
+	
+	$* 				Expands into the list of positional parameters, starting with 1.
+					When surrounded by double quotes, it expands into a double
+					quoted string containing ALL of the positional parameters, each
+					separated by the first character of the IFS shell variable
+					(by default a space character).
+	
+	$@ 				Expands into the list of positional parameters, starting with 1.
+					When surrounded by double quotes, it expands EACH positional
+					parameter into a separate word surrounded by double quotes.
+	
+	When a function calls another function using $* or $@ then all the arguments
+	are expanded seperated by space( IFS ).
+	
+		func $*
+		func $@
+	
+	When enclosed in double qoutes "$@" preserves the argument position 
+	and it appears at the same argument position as the parent function 
+	is called.
+	
+	Whereas in "$*" all the arguments are combined to form a single argument.
+	
+	" $@ "  preserves the integrity of each positional parameter. 
+	
+	
+		#!/bin/bash
+		# posit-params3 : script to demonstrate $* and $@
+		print_params () {
+		echo "\$1 = $1"
+		echo "\$2 = $2"
+		echo "\$3 = $3"
+		echo "\$4 = $4"
+		}
+		pass_params () {
+		echo -e "\n" '$* :'		;	print_params	 $*
+		echo -e "\n" '"$*" :'	;	print_params	"$*"
+		echo -e "\n" '$@ :'		;	print_params	 $@
+		echo -e "\n" '"$@" :'	;	print_params 	"$@" 
+		}
+
+		pass_params "word" "words with spaces"
+	
+	
+	Strings And Numbers
+	
+		
+		Parameter Expansion
+		
+			$a OR ${a}
+			
+			{} is used incase to differentiate it from another word.
+			
+				echo "$a_file"		: access a_file variable
+				echo "${a}_file" 	: access a variable
+			
+		Expansions To Manage Empty Variables
+			
+			${parameter:-word}
+			
+				If parameter is unset (i.e., does not exist) or is empty, this expansion 
+				results in the value of word. If parameter is not empty, the expansion 
+				results in the value of parameter.
+			
+			${parameter:=word}
+				
+				If parameter is unset or empty, this expansion results in the value 
+				of word. In addition, the value of word is assigned to parameter.
+				If parameter is not empty, the expansion results in the value of
+				parameter.
+				
+				
+			${parameter:?word}
+				
+				If parameter is unset or empty, this expansion causes the script to 
+				exit with an error, and the contents of word are sent to standard error. 
+				If parameter is not empty, the expansion results in the value of 
+				parameter.
+			
+			${parameter:+word}
+				
+				If parameter is unset or empty, the expansion results in nothing. If 
+				parameter is not empty, the value of word is substituted for parameter; 
+				however, the value of parameter is not changed.
+				
+	Expansions That Return Variable Names
+		
+		${!prefix*}			OR 		${!prefix@}
+	
+	String Operations
+	
+		${#parameter}					: return the length of parameter
+		${parameter: offset: length}	: return the string begining from offset 
+									 	  length characters.
+									  	  Negative value starts from end.Opposite dir. 
+		
+		${parameter#pattern}
+		${parameter##pattern}
+		
+		These expansions remove a LEADING portion of the string contained in parameter 
+		defined by pattern. pattern is a wildcard pattern like those used in pathname
+		expansion.
+		The difference in the two forms is that the # form removes the shortest match,
+		while the ## form removes the longest match.
+		
+		
+		${parameter%pattern}
+		${parameter%%pattern}
+		
+			Same as above but remove text from the end of the string.
+		
+		
+		${parameter/pattern/string}
+		${parameter//pattern/string}
+		${parameter/#pattern/string}
+		${parameter/%pattern/string}
+		
+		This expansion performs a search-and-replace upon the contents of parameter.
+		If text is found matching wildcard pattern, it is replaced with the contents of
+		string. In the normal form, only the first occurrence of pattern is replaced. 
+		
+		// - removes all occurance
+		/# - removes first occurance from begining
+		/% - removes first occurance from end
+		
+		/string may be omitted which causes the text matched by pattern to be deleted.
+	
+	
+	Arrays
+	
+		Syntax 
+		
+			name[subscript]=value
+		
+			name=(value1 value2 ...)
+		
+		Ex.
+			
+			arr=$(echo {1..10})
+			echo $arr
+			
+			1 2 3 4 5 6 7 8 9 10
+			
+			arr[100]=10
+			
+				When an array is declared with index only then only that data is 
+				allcoated for that particular index not for other until explicitly
+				declared.
+				
+				In Above Case for 0-99 no memory gets initialized i.e gaps are 
+				allowed to exists. 
+			
+			By using the += assignment operator, we can automatically append values to 
+			the end of an array.	
+			
+				arr+=(1 2 3)	
+			
+		Outputting The Entire Contents Of An Array
+		
+			The subscripts * and @ can be used to access every element in an array.
+			Similar to parameter passing from one function to another.
+			
+			There behaviour is identical when used without quotes and spilt all 
+			elements by spaces as defined by IFS.
+			
+			The * notation results in a single word containing the array’s contents,
+			while the @ notation results in three words, which matches the arrays 
+			“real” contents.
+			
+				arr=( "Hello World" "Be What's Next" )
+				for i in "${arr[@]}" ;do echo $i ;done
+				for i in "${arr[*]}" ;do echo $i ;done
+			
+		Determining The Number Of Array Elements
+		
+			echo ${#a[@]} # number of array elements
+			
+			echo ${#a[100]}	#size of 100th element
+		
+		Finding The Subscripts Used By An Array
+			
+			to determine which elements actually exist.
+			
+				${!array[*]}
+				${!array[@]}
+			
+			for i in "${!foo[@]}"; do echo $i; done
+				
+				display index having valid number declared explicitly  by the user.	
+		
+		Sorting an array
+		
+			Using pipelining
+		
+			a_sorted=($(for i in "${a[@]}"; do echo $i; done | sort))	
+			
+		Deleting an array or a single element of array
+		
+			unset array_name
+			
+			unset 'arr[index]'
+		
+		
+	Group Commands And Subshells
+	
+		bash allows commands to be grouped together.
+		
+		Two Ways
+		
+			Group command:
+			
+				{ command1; command2; [command3; ...] }
+			
+			Subshell:
+			
+				(command1; command2; [command3;...])		
+		
+		
+			

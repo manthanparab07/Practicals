@@ -1,0 +1,159 @@
+------------------------- Permissions -----------------
+
+	Operating systems in the Unix tradition are not only multitasking systems, 
+	but also multi-USER systems, as well.
+
+	A method had to be devised to protect the users from each other.
+	
+	So In Unix Security Model , a access rights are divided into three parts :
+		
+		Owner( USER )	Group( Set of USER )	World( Everybody Else )
+		
+	A USER may own files and directories. When a user owns a file or directory,
+	the user has control over its access. Users can, in turn, belong to a GROUP
+	consisting of one or more users who are given access to files and directories 
+	by their owners.
+	In addition to granting access to a group, an owner may also grant some set of
+	access rights to everybody, which in Unix terms is referred to as the WORLD.
+	
+	1. id 		: Displays Necessary Info About Current Users
+		
+		Content Of id command o/p
+			
+			uid	:	userid
+			gid	:	groupid
+			.
+			.
+			.....
+	
+	
+	Reading, Writing, And Executing
+	
+		Access rights to files and directories are defined in terms of read access(r),
+		write access( w ), and execution access( x ).
+	
+	
+		ls -l ./python.py 
+	
+		O/P
+	
+		-rw-rw-r-- 1 hades hades 527 Jun  6 11:01 ./python.py
+
+		The first ten characters of the listing are the file attributes.
+		The first of these characters is the file type.
+	
+		-	: A regular file
+		d	: A directory
+		l	: A Symbolic link.
+		
+			Notice that with symbolic links, the remaining file
+			attributes are always “rwxrwxrwx” and are dummy values. The real
+			file attributes are those of the file the symbolic link points to.
+	
+		The remaining nine characters of the file attributes, called the file mode,
+		represent the read, write, and execute permissions for the file's owner,
+		the file's group owner, and everybody else:
+	
+		User(rwx) group(rwx) world(rwx)
+	
+	
+		Permission Attributes :
+	
+							File 								Directories
+	
+		r :			Allow File to Be Opened And Read.	Allow it's content to be listed.
+	
+		w :			Allow to truncate , written.		Allow to create , delete and 
+														rename the files present.
+					But Not rename and delete.			
+					Rename and Delete is Determined 
+					by the directory.
+	
+		x :			Allow to execute a file .			Allow to enter into a directory.
+														cd ./directory
+	
+	
+	2. chmod – Change File Mode
+	
+		chmod supports two distinct ways of specifying mode changes: octal number 
+		representation, or symbolic representation.
+		
+		In Linux, the default permissions value is 666 for a regular file, 
+		and 777 for a directory.
+		
+		Octal representation :
+			
+		Ocatl Bin rwx
+			S rwx rwx
+			0 000 ---
+			1 001 --x
+			2 010 -w-
+			3 011 -wx
+			4 100 r--
+			5 101 r-x
+			6 110 rw-
+			7 111 rwx
+		
+		Ex. chmod 600 filename			6 - OWNER 0 - GROUP 0- World
+		
+		
+		Symbolic notation :
+		
+			u 	Short for “user” but means the file or directory owner.
+			g 	Group owner.
+			o 	Short for “others,” but means world.
+			a 	Short for “all.” The combination of “u”, “g”, and “o”.
+			
+			The operation may be a “+” indicating that a permission is to be added,
+			a “-” indicating that a permission is to be taken away, or
+			a “=” indicating that only the specified permissions are to
+			be applied and that all others are to be removed.
+			
+			Permissions are specified with the “r”, “w”, and “x” characters.
+			
+			
+			Ex. u+x , u-x , +x , o-rw , u+x,go=rx
+			
+	3. umask – Set Default Permissions
+		
+		In Linux, the default permissions value is 666 for a regular file,
+		and 777 for a directory. When creating a new file or directory, 
+		the kernel takes this default value, "subtracts" the umask value,
+		and gives the new files the resulting permissions.
+		
+		So if our umask value is 022, then any new files will, by default,
+		have the permissions 644 (666 - 022). Likewise, any new directories
+		will, by default, be created with the permissions 755 (777 - 022).
+		
+		umask		: which will return your system's umask as a four-digit octal number
+		
+		umask		: To set a umask of 022 ( Only For That Shell Session )
+		
+		umask 777	: to make new directories created completely inaccessible. 
+		
+	4. su	 – Run a shell as another user
+		
+		to enter into shell of another login
+		
+		su username	
+		
+		When finished, enter “exit” to return to the previous shell
+		
+	5. sudo	 – Execute a command as another user		
+		
+		sudo -i
+			
+			to execute the terminal in root shell
+		
+	6. chown – Change File Owner And Group
+	
+		chown [owner][:[group]] file...
+		
+		Ex. chown hades:hades filename
+	
+	7. passwd	: Changes user password
+	
+		passwd user
+	
+	
+	

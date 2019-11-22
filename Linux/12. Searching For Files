@@ -1,0 +1,260 @@
+-----------------------	Searching For Files -----------------------------------
+
+	As Everything in linux is a file thus to search these files and matching pattern
+	several commands are provided.
+	
+		● locate 	– Find files by name
+		● find 		– Search for files in a directory hierarchy
+		● xargs 	– Build and execute command lines from standard input
+		● touch 	– Change file times
+		● stat 		– Display file or file system status
+
+
+	1. locate search_name
+		
+		search_name is just a string and is not considered as a particular directory
+		while searching i.e locate /dev/se ( It Will Search Every File not particular
+		to /dev/ .. )
+		
+		The locate program can find a file based solely on its name.
+		
+		The locate program performs a rapid database search of pathnames, and then 
+		outputs every name that matches a given substring.
+		
+			locate bin/zip
+		
+		locate will search its database of pathnames and output any that contain the 
+		string.
+
+		The locate database is created by another program named updatedb. Usually, it is 
+		run periodically as a cron job; that is, a task performed at regular intervals by
+		the cron daemon.Since the database is not updated continuously, you will notice 
+		that very recent files do not show up when using locate.
+		
+		To overcome this, it’s possible to run the updatedb program manually by becoming
+		the superuser and running updatedb at the prompt.
+
+			sudo updatedb
+
+	2. find – Find Files The Hard Way
+	
+		The find program searches a given directory (and its subdirectories) for 
+		files based on a variety of attributes.
+		
+		Used to find is given one or more names of directories to search. 
+		
+		For example, to produce a list of our home directory:
+		
+			find ~
+			
+		Attributes of find commands .
+				
+			Search Can Be Restricted to directories , file , symbolic links .etc
+			By adding -type then adding specificics
+			
+				-type file_type
+				
+				file_type
+				
+				d 	-	Directory
+				f 	-	Regular file
+				l 	-	Symbolic link
+				
+			-name 
+			-size Attributes
+			
+			Search for all the regular files that match the wildcard pattern “*.JPG” and 
+			are larger than one megabyte:
+				
+				find ~ -type f -name "*.JPG" -size +1M | wc -l
+			
+			k Kilobytes 
+			M Megabytes 
+			G Gigabytes 
+			
+			Can Also Be Used to specify the file size 
+			
+			Numeric arguments can be specified as
+
+				   +n     for greater than n,
+
+				   -n     for less than n,
+
+				    n     for exactly n.
+
+			
+			More Attributes 
+			
+			-cmin n 		Match files or directories whose content or attributes were
+							last modified EXACTLY n minutes ago. To specify less than n
+							minutes ago, use -n and to specify more than n minutes
+							ago, use +n.
+			
+			-empty 			Match empty files and directories.
+			
+			-group name 	Match file or directories belonging to group. group may
+							be expressed as either a group name or as a numeric group
+							ID.
+							
+			-mmin n 		Match files or directories whose contents were last
+							modified n minutes ago.
+			
+			-name pattern	Match files and directories with the specified wildcard
+							pattern.
+			
+			-nogroup 		Match files and directories that do not belong to a valid
+							group.
+
+			-perm mode 		Match files or directories that have permissions set to the
+							specified mode. mode may be expressed by either octal or 
+							symbolic notation.
+			
+			-size n 		Match files of size n.
+			
+			-type c			Match files of type c.
+			
+			-user name		Match files or directories belonging to user name.
+							The user may be expressed by a username or by a numeric
+							user ID.
+							
+	Operators
+	Even with all the tests that find provides, we may still need a better way to 	
+	describe the logical relationships between the tests.
+	find provides a way to combine tests using logical operatorsto create more complex 
+	logical relationships.
+	
+		find ~ \( -type f -not -perm 0600 \) -or \( -type d -not -perm 0700 \)
+		
+	Meaning of above command 
+		
+		all the files with permissions that are not 0600 and the directories with 
+		permissions that are not 0700.	
+	
+			Operator 						Description
+		
+			-and 		Match if the tests on both sides of the operator are true.
+						May be shortened to -a.Implicilty use for space sperated.
+			
+			-or			-o
+			
+			-not		!
+			
+			( ) 		Groups tests and operators together to form large expressions
+						Improve readability of the command.Since the
+						parentheses characters have special meaning to the shell,
+						they must be quoted when using them on the command line
+						by using the backslash character is used to escape them.
+						
+	Predefined Actions
+	
+	find allows actions to be performed based on the search results. There are a set of 
+	predefined actions and several ways to apply user-defined actions.
+	
+		Action 									Description
+		
+		-delete 				Delete the currently matching file.
+		
+		-ls 			Perform the equivalent of ls -dils on the matching file.
+		
+		-print 			Output the full pathname of the matching file to standard
+						output. This is the default action if no other action is
+						specified.
+		
+		-quit 			Quit once a match has been made.
+		
+		
+		Ex : 	find ~ -type f -name '*.BAK' -delete
+		
+	User Defined Action
+	
+	In addition to the predefined actions, we can also invoke arbitrary commands.
+	
+	This action works like this:
+	
+			-exec command {} ;
+			
+	Since the brace and semicolon characters have special meaning to the shell,
+	they must be quoted or escaped.
+	
+			-exec rm '{}' ';'
+	
+	where command is the name of a command, {} is a symbolic representation of the 
+	current pathname, and the semicolon is a required delimiter indicating the end of 
+	the command.
+	
+	It’s also possible to execute a user-defined action interactively. By using the -ok 
+	action in place of -exec, the user is prompted before execution of each specified 
+	command:
+	
+			find ~ -type f -name 'foo*' -ok ls -l '{}' ';'
+			< ls ... /home/me/bin/foo > ? y
+			-rwxr-xr-x 1 me
+			me 224 2007-10-29 18:44 /home/me/bin/foo
+			
+	Improving Efficiency
+	
+	When the -exec action is used, it launches a new instance of the specified command
+	each time a matching file is found. There are times when we might prefer to combine 
+	all of the search results and launch a single instance of the command. 
+	
+	For example, rather than executing the commands like this:
+			
+			ls -l file1
+			ls -l file2
+	
+	we may prefer to execute them this way:
+			ls -l file1 file2
+	
+	thus causing the command to be executed only one time rather than multiple times. 
+	
+	There are two ways we can do this. 
+	The traditional way, using the external command xargs and the alternate way, 
+	using a new feature in find itself. 
+	
+	By changing the trailing semicolon character to a plus sign, we activate the ability
+	of find to combine the results of the search into an argument list for a single
+	execution of the desired command. Going back to our example, this:
+	
+			find ~ -type f -name 'foo*' -exec ls -l '{}' ';' 
+			
+			find ~ -type f -name 'foo*' -exec ls -l '{}' '+'
+	
+	xargs
+		
+		It accepts input from standard input and converts it into an argument 
+		list for a specified command.
+		
+		Ex :		
+			find ~ -type f -name 'foo*' -print | xargs ls -l
+		
+		
+		We see the output of the find command piped into xargs which, in turn, 
+		constructs an argument list for the ls command and then executes it.
+		
+	
+		ls | xargs ls -l | wc -l
+	
+	
+	3. touch 	change file timestamps
+	
+		touch [ path ]filename
+		
+		Update the access and modification times of each FILE to the current time.
+
+       	A FILE argument that does not exist is created empty.
+		
+	4. stat 
+	
+	The stat command reveals all that the system understands about a file and its 
+	attributes.
+	
+		stat [ path ]filename
+	
+	File: 'x.txt'
+	Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
+	Device: 805h/2053d	Inode: 1058275     Links: 1
+	Access: (0664/-rw-rw-r--)  Uid: ( 1000/   hades)   Gid: ( 1000/   hades)
+	Access: 2019-06-14 08:21:17.331752902 +0530
+	Modify: 2019-06-14 08:21:17.331752902 +0530
+	Change: 2019-06-14 08:21:17.331752902 +0530
+	Birth: -

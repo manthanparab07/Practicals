@@ -1,0 +1,1109 @@
+                          -- MySQL --
+
+ IMP : You can’t modify a table while you’re reading from it at the same time.
+
+1.  select database() ;       Display's Current Database in Use
+
+2.  DESCRIBE table ;
+    DESC table ;             Display's Structure Of table
+    SHOW COLUMNS from table ;
+
+    SHOW CREATE TABLE table_name ;   Advanced QUERY shows engine_type
+
+3.  SHOW DATABASES ;
+    SHOW TABLES;
+
+4.  DATABASE_NAME.table_name ;   Removes Ambiguity
+
+5. ... column_name like "exp" ;
+    "%exp"  :- ends with
+    "exp%"  :- starts with
+    "%exp%" :- substring
+     exp is matched without checking the case
+     _ in exp is for matching character length
+
+6.  select * from tables_name
+    ORDER BY column_name_1 , column_name_2 ASC | DESC | BIN ;
+
+     The default sort is case insensitive and alphabetically.
+     incase of collision the column_name_2 value is checked.
+     and each column can have it s own ascending type .. ASC DESC ..
+     To do ASCII Sort i.e Uppercase comes before lowercase add BINARY .
+     ORDER BY BINARY column_name , ... ;
+
+7.  CAST( column_name AS new_datatype )
+     can be used to force a column to be treated as different type
+     make sort behave differently.
+     -- new_datatype --
+     AS BINARY
+     AS SIGNED
+     AS UNSIGNED
+     AS CHAR
+     AS DATE
+     AS TIME
+     AS DATETIME
+
+8.  select ... LIMIT a , b        used to control no of rows displayed
+    select ... LIMIT a OFFSET b   use for speed up .
+
+     if    only a is splecified the first a records are displayed.
+     else  the next b records after first a records are displayed .
+
+9.  insert into table_name values
+    (...data...),
+    (...data...),
+    ...
+    (...data...);
+
+     to insert multiply tracks in a table.
+     This is useful to add multiple rows to a table in one statement ;
+     This helps to optimize the insertion process unlike the several
+     repeated inserted statements.
+
+     if any record is duplicate then insertion stops as soon as it is
+     encountered and records of insert are discarded .
+
+    insert IGNORE table_name values ......
+     add IGNORE to add non duplicate values and all duplicate keys are
+      ignored .
+
+    insert into table_name( .. column_names .. )
+    values ( ..data.. ) , .. ;
+
+     its an order independent , readable and flexible .
+
+    insert into table_name() values () , () , () .... ;
+
+     All columns in a MySQL table have a default value of NULL unless another
+     default value is explicitly assigned when the table is created or
+     modified.
+
+     The () in syntax is used to represent that all columns and values are
+     set to their defaults.
+
+    insert into table_name
+    set column_name_1 = value , column_name_2 = value ..... ;
+
+     Another way to insert into a table
+
+     insert data from one column into another.
+
+    	Insert into table_name_1 ( column_name_1 , column_name_2 .... )
+    	Select column_names ... from table_name_2 
+    	[ where ... ];
+
+     The SIZE and the data_type f the corresponding column must be same.
+
+    REPLACE Keyword 
+
+     The REPLACE statement is just like INSERT , but with one difference.
+     You can’t INSERT a new row if there is an existing row in the table 
+     with the same primary key, You can get around this problem with a 
+     REPLACE query, which first removes any existing row with
+	 the same primary key and then inserts the new one.
+	 If there is not matching row then it acts as a normal insert statement. 
+
+		REPLACE artist VALUES (2, "Nick Cave and The Bad Seeds");
+
+	 The old row is deleted, and, second, the new row is inserted
+	 All insert variant listed above can be used with replace.
+
+	 The difference between INSERT IGNORE and REPLACE : 
+	 the first keeps the existing data with the duplicate key and 
+	 does not insert the new row, while the second deletes the existing row and
+	 replaces it with the new one.
+
+10. delete from table_name
+    where ....
+
+     if where clause not present then all columns are deleted.
+     Similar to TRUNCATE
+
+      TRUNCATE TABLE table_name ;
+
+     By using truncate statement MySQL first removes the table Structure
+     and recreates it .Thus the query does not display row affected count.
+
+     The TRUNCATE TABLE statement has two other limitations:
+       • It’s actually identical to DELETE if you use InnoDB tables.
+       • It does not work with locking or transactions.
+
+     MULTI DELETE from table 
+
+     In multiple table deletes, you can’t use ORDER BY or LIMIT clauses.
+
+     Three ways :
+
+    	 In first way after delete keyword is followed by table_names 
+		 from which tracks are going to be deleted and after FROM clause
+		 is followed by table_names that should be queried . 
+			
+			DELETE track FROM track WHERE NOT EXISTS
+			(SELECT * FROM played WHERE track.artist_id = played.artist_id AND
+			track.album_id = played.album_id AND
+			track.track_id = played.track_id);
+
+		 In Second way after FROM keyword is followed by table_names 
+		 from which tracks are going to be deleted and after USING clause
+		 is followed by table_names that should be queried .
+
+			DELETE FROM track, album USING artist, album, track WHERE -- preferred way
+			artist_name = "New Order" AND
+			artist.artist_id = album.artist_id AND
+			artist.artist_id = track.artist_id AND
+			album.album_id = track.album_id;
+
+			DELETE track, album FROM artist, album, track WHERE
+			artist_name = "New Order" AND
+			artist.artist_id = album.artist_id AND
+			artist.artist_id = track.artist_id AND
+			album.album_id = track.album_id;
+
+
+11. update table_name
+    set column_name = values , ...
+    where conditions
+
+    if where clause is not splecified then all rows will get updated.
+
+     Multi-Table Update 
+
+	    UPDATE album INNER JOIN track USING (artist_id, album_id)
+		INNER JOIN played USING (artist_id, album_id, track_id)
+		SET album_name = UPPER(album_name);
+
+	 In first way after UPDATE keyword is followed by table_names 
+	 from which tracks are going to be Updated and after SET clause
+	 is followed by column_names that should be updated . 
+	
+		UPDATE artist, album, track, played
+		SET album_name = UPPER(album_name)
+		WHERE artist.artist_id = album.artist_id AND
+		album.artist_id = track.artist_id AND
+		album.album_id = track.album_id AND
+		track.artist_id = played.artist_id AND
+		track.album_id = played.album_id AND
+		track.track_id = played.track_id;
+
+	 You can’t use ORDER BY .
+	 You can’t use LIMIT .
+	 You can’t update a table that’s read from in a nested subquery.
+
+12. create DATABASE database_name ;
+    create DATABASE IF NOT EXISTS database_name ;
+
+     Database name defines a physical directory (folder) on disk after
+     a create statement.
+     On some OS name of system directory name is case sensitive for ex.
+     in linux , Mac OSX directory name are case sensitive while in
+     Windows its insensitive so DB and db as database_name name is
+     same in Windows while different in linux.
+
+     MAX length of DATABASE_NAME name can be 64 character length.
+     Same for COLUMN_NAME
+
+
+13. CREATE [ TEMPORARY ] TABLE table_name ( column_name data_type , .. , );
+
+     TEMPORARY allows us to create a table which gets deleted after the
+     window is closed so no cleanup .
+	
+	 Create duplicate table from another table
+
+    	create table new_table_name LIKE old_table_name; -- only structure is copied
+
+     to copy entire table including data rows.
+
+    	create table new_table_name Select column_names from table_name
+    		[where | using ....] ;
+
+     Useful to combine data from two table into one ;
+
+    	Create table ep Select artist_name , album_name 
+    	From artist INNER JOIN album USING (artist_id);
+    
+     -- data_type --
+
+    INT[ (width) ] [UNSIGNED] [ZEROFILL]
+
+       SIZE OF INT - 4 BYTES .
+
+       width and ZEROFILL can be use for left padding of values.
+       Using UNSIGNED the range of allowable value doubles 2^32 - 1 .
+
+       if you use ZEROFILL , MySQL automatically adds UNSIGNED to the
+       declaration (since zero filling makes sense only in the context
+       of positive numbers).
+
+    DECIMAL[(width[,decimals])] [UNSIGNED] [ZEROFILL]
+
+       DECIMAL(a,b) :- stores total a digits of which b digits are after
+       decimal . a >= b ( DEFAULT b is 0 )
+
+       SIZE : A binary format was introduced that uses four bytes for every
+       nine digits.
+
+    DATE
+      Possible Ways to insert a date value :
+          YYYY-MM-DD
+          YYYY/MM/DD
+          YYYYMMDD
+
+    TIME
+      format HHH:MM:SS :- 24 hour clock
+        for large value of time i.e in days we can use DD HH:MM:SS
+        D is for days, and while displaying DD is converted into hrs.
+
+    TIMESTAMP
+        YYY-MM-DD HH:MM:SS
+
+        if you assign null then is specifies current date and time.
+
+        Deciding column implement which behaviour such as :
+          1. TIMESTAMP should be updated only during insert statement
+             add DEFAULT CURRENT_TIMESTAMP at the end of declaration.
+
+          2. Updated on both insert and update then add statement
+             add DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+             at the end of column declaration.
+
+    CHAR[ (width) ]
+       if width is now specified then default 1 is taken.
+       Fixed memory allocation and equal to width BYTES and if characters
+       inserted are less than the width space is inserted.
+
+    BOOLEAN
+    ENUM('value1'[,'value2'[, ...]]   Single Values can be choosen at a time
+    TEXT
+    SET('value1'[,'value2'[, ...]])   Multiple Values can be choosen at a time
+
+
+14. Keys and Indexes
+
+     A Primary key uniquely identifies each row in a table.When declared,
+     MySQL it creates a new file on the disk which stores the information
+     about where the data from each row in the table is stored.This
+     information is called as index and is sole purpose is to speed up
+     the search which includes that Primary key.
+
+    SHOW INDEXES from table_name ;
+
+     Gives Description of keys described in the tables;
+     Cardinality is the no of unique value ; for an index of a Primary key.
+     i.e same as no of rows in a table.
+
+     Index is used for improving performance declared using KEY keyword.
+     But the performance increase is at the cost of disk space and it need
+     to update whenever the table data change.
+
+    Syntax
+
+      create table table_name (
+      column_names data_type PRIMARY KEY ,
+      ..
+      column_name_2 data_type ,
+      PRIMARY KEY( column_names ),
+      KEY KEY_NAME ( column_names )
+      );
+
+     Like PRIMARY KEY creates a primary key and an index for you,
+     KEY creates an index only.
+
+15. AUTO_INCREMENT
+
+     The AUTO_INCREMENT feature has the following requirements:
+       • The column it is used on must be indexed( i.e Primary Key , KEY ).
+       • The column that is it used on cannot have a DEFAULT value.
+       • There can be only one AUTO_INCREMENT column per table.
+
+16. Adding, Removing, and Changing Columns
+
+    Changing name of the column.
+
+      alter table table_name
+      CHANGE old_column_name new_column_name new_data_type [ CONSTRAINTS ] ;
+
+      OR
+
+      CHANGE OR MODIFY have same meaning.
+
+      Both name and data type can be changed using single alter command.
+
+        new_column_name = old_column_name if we only want to change data_type
+        or update CONSTRAINTS .
+
+    ADD a column to a table
+
+      alter table table_name
+      ADD column_name data_type [ CONSTRAINTS ] [ FIRST | AFTER column_name ] ;
+
+       use keyword FIRST to make the inserted column first column in table.
+       use keyword AFTER to specify the position of column.
+
+    DROP a column in a table
+
+      alter table table_name
+      DROP [COLUMN] column_name ;
+
+     Multiple Alterations can be done using a single alter command.
+
+        alter table table_name
+        ADD   ...
+        DROP  ...
+        CHANGE...
+        ;
+
+    ADD Primary Key
+
+      alter table table_name
+      ADD PRIMARY KEY( column_names );
+
+      ALTER TABLE artist
+      ADD INDEX by_name ( column_names );
+
+    DROP Primary Key
+
+      alter table table_name
+      DROP PRIMARY KEY;
+
+      ALTER TABLE artist
+      DROP INDEX by_name;
+
+    CHANGING table name
+
+      alter table table_name
+      RENAME TO new_table_name ;
+
+
+17.  Column ALIASES
+
+      Select column_name_1 AS alias_name , .... from table_name ;
+
+     A column or a group of columns into a single column output we
+     form an ALIAS using AS keywords.
+
+     Cannot Use the alias name in WHERE , USING , ON clauses;
+     i.e 
+    	
+    	Select column_name as alias_name from table_name
+        where alias_name conditions ;
+
+     AS keyword is optional and the above queries yield the same result 
+     with or without AS.
+
+ 18. Table ALIASES
+
+ 	Select alias_name.column_names from table_name AS alias_name
+ 	where conditions;
+
+ 	 Unlike Column aliases table aliases can be used in WHERE,USING,
+ 	 ON clauses.We can use refer the table even before defining the alias.
+
+ 	 AS keyword is optional but required to make code more concise.
+
+ 19. CONCAT()
+
+ 	 MySQL Function which concatenates together the strings that are
+ 	 parameters
+
+ 		Select CONCAT( column_names , "Hello" , column_names )
+ 		from table_name ; 
+
+ 20. AGGREGATING DATA
+
+ 	DISTINCT Clause
+
+ 	 It is a post processing filter that allows us to remove duplicate
+ 	 entries from the output.
+
+ 		Select DISTINCT column_name , column_names from table_name
+ 		where ...
+
+ 	GROUP BY Clause
+
+ 	 It is used to organize data before other clause such as WHERE clause
+ 	 and in contrast ORDER BY is acted once GROUP BY is used.
+
+ 		Select * from table_name
+ 		where conditions
+ 		GROUP BY column_name
+ 		ORDER BY column_name ;
+
+ 21. COUNT() , AVG() , SUM() , MIN() , MAX()
+
+ 	 MySQL function which is used to count no of records in the output.
+
+ 22. HAVING Clause
+
+ 	 AS WHERE clause can only contain expression, HAVING clause can contain
+ 	 both expressions , functions ..
+
+ 	 The HAVING clause is only for deciding how to form each group or cluster,
+ 	 not for choosing rows in the output.
+
+ 23. INNER JOIN
+
+ 	Select column_names from table_name_1
+ 	INNER JOIN table_name_2 USING ( column_names , ...) ;
+
+ 	 The USING clause defines one or more columns that are in both tables or 
+ 	 results, and used to join or match rows.
+
+ 	 If the two tables have different column_names which are used in
+ 	 join the they can be joined using ON keyword.
+
+ 		Select column_names from table_name_1
+ 		INNER JOIN table_name_2 
+ 		ON table_name_1.column_name_1 = table_name_2.column_name_2 ;
+
+ 		where clause can be also used instead of ON same result.
+
+ 	To get Cartesian Prodct of two tables :
+
+ 		Select * from table_name_1,table_name_2 ;
+
+ 		Select * from table_name_1 INNER JOIN table_name_2
+
+ 24. UNION
+
+ 		(
+ 			Select column_names from table_name 
+ 			UNION
+ 			Select column_names from table_name
+ 			UNION
+ 		...
+ 			Select column_name from table_name
+ 		)	[ ORDER BY column_name ] ;
+ 		
+
+ 	 It allows us to combine the output of more than one SELECT 
+ 	 statement and display it without considering any logical 
+ 	 relation between the output of each SELECT statement as long
+ 	 as no of COLUMNS of each SELECT statement is same.  
+
+ 	 The output is labeled with the names of the column_names of the 
+ 	 first query. Use column aliases to change it.
+
+ 	 All the matching should have same type and same column count of
+ 	 each select query output.
+
+ 	 UNION alone removes all duplicates in the result.
+ 	 Use UNION ALL to display duplicates in the results.
+
+ 	 If a sub-query contains ORDER BY clause without LIMIT clause
+ 	 then the sub-query result is not sorted as the it will makes
+ 	 no point but with LIMIT clause it is sorted.
+
+ 	 The output of the UNION operations is not guarenteed to be ordered
+ 	 even if the sub-query are ordered so add ORDER BY clause at the 
+ 	 end of whole query, 
+
+ 25. LEFT JOIN
+
+ 	Select column_names from table_name_1
+ 	LEFT JOIN table_name_2 USING ( column_names , ...) ;
+
+ 	Gives Emphasis on the first table.
+
+ 	Ex.
+
+ 	You want to list all tracks, and next to each track
+	you want to show when it was played. If a track has been 
+	never been played, you want to see that.
+	If it’s been played many times, you want to see that too.
+
+ 26. NATURAL JOIN 
+
+ 	Select column_names from table_name_1
+ 	NATURAL JOIN table_name_2 ;
+
+ 	 MySQL look for columns with the same
+	 names and, behind the scenes, adds these silently into an 
+	 inner join with a USING clause.
+
+	 May yield unpredictable result if column names are not same or
+	 undesired column have same name.
+
+ 27. NESTED QUERIES
+
+ 	 Neseted query is the one which is inside another.
+ 	 The inner query is called nested query which is written in 
+ 	 parenthesis.
+
+ 	 Ex. 
+ 		
+ 		 Normal Query
+
+ 	 	Select artist_name  from artist 
+ 	 	INNER JOIN album USING (artist_id)  
+ 	 	where album_name = "In a Silent Way";
+
+ 	 	 Identical to Nested Counterpart.
+
+ 		Select artist_name from artist 
+ 		where artist_id = ( Select artist_id from album where album_name = "In a Silent Way"  );
+
+ 		 Performance of Nested vs Unnested
+
+ 		 Performance wise nested queries are hard to optimize and 
+ 		 the are always slower than their Unnested counterpart.
+
+ 		 But it is favourable in situation where large and long 
+ 		 table data is to be compared from multiple table at the 
+ 		 same time.
+
+ 		SELECT track_name FROM track INNER JOIN played
+		USING (artist_id, album_id, track_id)
+		WHERE played = (SELECT MAX(played) FROM played);
+
+		 rather than using a constant value we used a scalar instead.
+
+		The Sub query in above cases will only work fine if 
+		the output OF the subquery return 1 row ONLY.
+
+	 ANY, SOME ALL, IN , NOT IN
+
+	 ANY and SOME are equivalent just SOME gives more closer to ENGLISH
+	 literal meaning of what they action they perform.
+
+	 They are used for handling multiple subquery row ouptut and then 
+	 using them to evaluate the outer query.
+
+	 For Ex.
+
+	 To find out all engineer whose experience is more than the 
+	 least experienced producer.
+
+		SELECT engineer_name, years
+		FROM engineer WHERE years > ANY
+		(SELECT years FROM producer);
+
+		SELECT producer_name FROM producer WHERE
+		producer_name = ANY
+		(SELECT engineer_name FROM engineer);  
+
+	 = ANY keyphrase of alias IN  
+
+	 ALL
+		
+	 Suppose you want to find engineers who are more experienced than 
+	 all of the producers that is, more experienced than the most 
+	 experienced producer. You can do this with
+	 the ALL keyword in place of ANY :
+		
+		SELECT engineer_name, years FROM engineer
+		WHERE years > ALL (SELECT years FROM producer);
+		Empty set (0.00 sec)
+
+	 While the ANY keyword returns values that satisfy at least one 
+	 condition (Boolean OR), the ALL keyword returns values when
+	 all the conditions are satisfied (Boolean AND).
+
+	 If the table in the subquery is empty, the result is always true.
+
+	 Multipe Columns can be compared using IN and sub-query
+
+	SELECT producer_name, years FROM producer WHERE
+	(producer_name, years) IN
+	(SELECT engineer_name, years FROM engineer);
+
+	-- IN will result in TRUE Matching Pair is found 
+
+
+ 28. EXISTS and NOT EXISTS
+
+	 	 Extremely useful for using first column_name inside the nested
+	 	 query. The query resulted is called as correlated query.
+
+
+	 		SELECT artist_name FROM artist WHERE EXISTS
+			(
+				SELECT * FROM album 
+				WHERE album_name = artist_name
+			);
+
+		 It allows the column of outer_table to be compared with 
+		 inner_table column.
+		 If the subquery does not any relation with the outer query then
+		 the output row count is equal to no of rows generated by 
+		 the subquery.
+
+		 The outer query should produce the artist name whenever
+		 the inner query is true.
+
+		SELECT artist_name FROM artist WHERE EXISTS
+		(	SELECT album.artist_id FROM album 
+			WHERE artist.artist_id = album.artist_id
+			GROUP BY artist.artist_id HAVING COUNT(*) >= 2
+		);
+
+		 Same can be done using joins
+
+		select artist_name  from artist 
+		INNER JOIN album  USING (artist_id) 
+		GROUP BY (artist_name) HAVING count(*) >= 2 ;
+
+	 Nested Queries in the FROM Clause
+
+	 Every derived table must have an alias even if not used.
+
+	 If we want to display a certain columns from subquery using 
+	 from clause. 
+
+		SELECT producer_name, months FROM
+		(
+			SELECT producer_name, years*12 AS months FROM producer
+		) AS prod ;
+
+	 where prod is alias_name for the derived table.
+
+		select avg(album_count) from
+	    (
+		    Select count(*) as album_count from album
+		    GROUP BY (artist_id) 
+		) as al ;
+
+ 29. Types of MySQL tables 
+
+ 		1. Transaction-safe tables(TSTs)
+
+ 			These include the InnoDB table types.
+ 			TSTs support transactions and have advanced features that allow you
+			safely restore and recover from database failures.
+
+ 		2. Non transaction-safe tables(NTSTs)
+
+ 			These include the MyISAM, Merge, and Memory (also called Heap).
+ 			They’re less advanced than the TSTs, but that isn’t always bad.
+			They’re typically much faster to query because there’s less overhead,
+			and they use much less disk and memory space.
+
+			SHOW TABLE STATUS ;
+			SHOW ENGINES; 
+
+			ALTER TABLE table_name type = InnoDB; -- change table engine
+
+ 30. Transaction
+
+ 			START TRANSACTION ; 	-- TO START 
+ 			...
+ 			ROLLBACK ;				-- TO UNDO CHANGES 
+ 			...
+ 			COMMIT ;				-- TO MAKE CHANGES PERMANENT
+		
+		COMMIT ends the transaction and make the changes to the database.
+
+
+ 31. Managing user privileges
+
+ 	 Creating and Using New Users
+
+ 	 	GRANT ALL ON database_name.* TO 'user_name'@'localhost' 
+ 	 	IDENTIFIED BY 'the_password';
+
+ 	 The GRANT statement gives privileges to the user.
+ 	 ALL - all simple privileges - All Columns of the table.
+ 	 Above we are granting privileges for all tables inside database_name.
+ 	 If user_name does not exists MySQL will automatically create one with 
+ 	 the above privileges. -- depreciated 
+
+ 	 To Create user 
+
+ 		CREATE USER user_name IDENTIFIED BY 'the_password' ;
+
+
+ 	 To Drop user
+
+ 		DROP user user_name ;
+
+ 		OR 
+
+ 		delete form mysql.user where user = 'user_name' and Host = 'host_name' ;
+
+ 	 user has the name user_name and can connect to the server only from the
+ 	 localhost, the machine on which the database server is installed.
+
+ 	 We can specify a specific table , column names which can be 
+ 	 accessed by the user.
+
+ 		GRANT ALL ON database_name.table_name TO 'user_name'@'localhost'; 
+ 		-- No need to specify password as the account already exists.
+
+ 	 Specify columns to be accessed by the user
+
+ 		GRANT Select ( column_names ) ON database_name.table_name 
+ 		TO 'user_name'@'host_name' ;
+
+ 	 ONLY SELECT will make database read only.
+ 	 MySQL privilege hierarchy. 
+ 	 There are four levelsreading from highest to lowest, 
+ 		global, database, table, and column.
+
+ 	 The privileges can be configured: 
+ 	 	Global 		(G)		*.* 
+ 	 	Database 	(D) 	database_name.*
+ 	 	Table 		(T) 	database_name.table_names
+ 	 	Column 		(C)		Select ( column_names )
+
+ 	Privilege  				G D T C
+	ALL  					✓ ✓ ✓ ✗
+	ALTER  					✓ ✓ ✓ ✗
+	CREATE  				✓ ✓ ✗ ✗
+	CREATE TEMPORARY TABLES ✓ ✓ ✗ ✗
+	DELETE  				✓ ✓ ✓ ✗
+	DROP 					✓ ✓ ✓ ✗
+	GRANT 				 	✓ ✓ ✓ ✗
+	INDEX 					✓ ✓ ✓ ✗
+	INSERT					✓ ✓ ✓ ✓
+	SELECT 					✓ ✓ ✓ ✓
+	SHOW DATABASES 			✓ ✗ ✗ ✗
+	SHUTDOWN 				✓ ✗ ✗ ✗
+	UPDATE 					✓ ✓ ✓ ✓
+	
+
+		GRANT SELECT, UPDATE .. OPTION ON database_name.* TO 'user_name'@'localhost';
+
+	 Ability to grant own privileges to others. For most applications,
+	 there is generally no need for this, because the root user decides
+	 on access privileges.
+
+		GRANT GRANT OPTION ON database_name.* TO 'user_name'@'localhost';
+
+	 SHUTDOWN Controls whether the server can be shut down with the
+	 mysqladmin shutdown command. 
+
+ 32. USERS and HOSTS
+	
+	 MySQL actually treats local connections differently; if the client is local,
+	 the connection is made internally through a Unix socket (for Linux ) 
+	 or through a named pipe (for Windows).
+	 This is generally much faster than the TCP/IP network connection used for
+	 remote access.
+
+	 for remote access to the server replace localhost to IP address of machine 
+	 where the database is installed in GRANT statement.
+	
+	 	To login into the server 
+
+			mysql -h ip_address_of_machine -u user_name -p  
+
+	 	ip_address_of_machine = localhost [ generally ] .
+		ip_address_of_machine can be website name www.head.com
+
+			GRANT ALL ON .*. TO 'hades'@'%.hades.com' IDENTIFIED BY 'the_password';
+
+	 The wildcard approach typically removes the need to create multiple users, 
+	 as a given user can connect from more than one machine.
+
+	 Connections are allowed from any machine in the hades.com domain.
+
+	 Anonymous Users
+
+	 	We can specify wildcard caracters for the host_name to i.e 
+	 	'hades%'@'localhost'.
+	
+
+		SELECT CURRENT_USER();
+		SHOW GRANTS;							-- current priviledges
+		SHOW GRANTS FOR 'selina'@'localhost';
+
+	 Revoking privileges
+
+	 To remove priviledges from user of access to column , tables.
+
+		REVOKE SELECT (time) ON music.track FROM 'partmusic'@'localhost';
+
+	 syntax same as grant except works opposite.
+
+
+	 FLUSH PRIVILEGES;
+
+	 Whenever you update the grant tables in the mysql database directly,
+	 you have to use the FLUSH PRIVILEGES instruction to tell the server
+	 to read in the updated data:
+
+		FLUSH PRIVILEGES;
+
+	 Set Password
+
+		SET PASSWORD FOR 'user_name'@'localhost' = 'new_password';
+
+
+
+ 33. Stored Object 
+
+ 	Stored database objects that are defined in terms of SQL code that
+ 	is stored on the server for later execution.
+
+ 	Types of stored Objects 
+
+ 	• Stored procedure:
+ 		An object created with CREATE PROCEDURE and invoked using the CALL statement.
+		A procedure does not have a return value but can modify its parameters 
+		for later inspection by the caller.
+	
+	• Stored function:
+		An object created with CREATE FUNCTION and used much like a built-in function. You
+		invoke it in an expression and it returns a value during expression evaluation.
+	
+	• Trigger:
+		An object created with CREATE TRIGGER that is associated with a table.
+		A trigger is activated when a particular event occurs for the table, 
+		such as an insert or update.
+	
+	• Event:
+		An object created with CREATE EVENT and invoked by the server according
+		to schedule.
+	
+	• View:
+		An object created with CREATE VIEW that when referenced produces a result set.
+		A view acts as a virtual table. 
+
+	Stored routines include stored procedures and functions.
+	Stored programs include stored routines, triggers, and events.
+	Stored objects  include stored programs and views.
+
+
+34. Variables in MySQL
+
+ 		SELECT @artist:=artist_name 
+ 		FROM artist WHERE artist_id = 1;
+
+ 	 artist is variable and is assigned using := operator.
+
+ 	 To display the variable content we use 
+
+ 		Select @artist ;
+
+ 	 To  explicitly setting the variable we use SET command
+
+ 		SET @var = 'value' , @var1 = 'value1' ... ;
+
+ 	 1. Variables are unique to a connection.
+ 	 2. Case sensitive default null value.
+ 	 3. Destroyed when then connection closes.
+ 	 4. Try avoiding using same variable to define and display 
+ 		 in the same query. 
+
+ 	 To declare LOCAL variable inside a procedure/function.
+
+ 		DECLARE variable_names[,] datatype(size)  [ DEFAULT default_value ] ;
+
+ 	 these local variables are displayed without @ prefix 
+
+ 		Select variable_names , variable_names ;
+
+ 	 DECLARE is permitted only inside a BEGIN ... END compound statement
+ 	 and must be at its start, before any other statements. 
+ 	 Scope till END statement.
+ 	 Declarations must follow a certain order. Cursor declarations must appear 
+ 	 before handler declarations. Variable and condition declarations must appear
+ 	 before cursor or handler declarations. 
+ 
+
+35. Procedures and Functions ( Routines ) 
+	
+	Any variable defined inside or changed persist even after the function
+	call ends. 
+
+	First change default delimiter(;) to another one as the procedure body will
+	have a delimiter seperated queries which should not hinder the outside body.
+
+		delimiter new_delim	;		-- changed curr_delim to new delim
+
+		CREATE PROCEDURE procedure_name( mode parameter_name data_type )
+		BEGIN
+		-- query1 ;
+		-- query2 ;
+		END
+		new_delim 		-- acts as an exit for procedure definition
+
+		delimiter ; 	-- restores original delimiter.
+
+		CALL procedure_name( parameters );
+
+	To remove a procedure 
+
+		DROP PROCEDURE procedure_name ;
+
+	To get all the user_defined function of database.
+
+		select specific_name, definer 
+		from information_schema.routines 
+		where definer not like '%mysql%';
+
+	Types of modes 
+
+		IN 		: Call by Value , the parameter value is copied .
+		OUT 	: Call by Referance , the parameter must be a variable.
+		INOUT 	:
+
+	Functions
+
+		CREATE FUNCTION function_name( mode arg_list ) 
+		RETURNS data_type
+		[ NOT ] DETERMINISTIC
+		BEGIN
+		-- qeury 1
+		-- query 2
+		RETURN value
+		END
+
+	A function can be called inside any statement just like any other
+	mysql function i.e Select function_name( arg_list )
+
+	When returning a value of char or varchar data type use @value instead
+	of value as it would return default VALUE  instead of changed value.
+
+	DETERMINISTIC : for a particular input it produces same output always.
+					Useful for optimization.
+
+
+	Stored routines does improve performance of the system as less information
+	is to be sent from database to the server but additional load is on the server 
+	as more work is done by the server and less by the client.
+
+	Procedures and functions can be dropped using 
+
+		DROP PROCEDURE procedure_name 
+		DROP FUNCTION  function_name
+
+	As routines are associated with a particular database several implications:
+
+		1. USE statements are not permitted as routines are associated 
+			with a particular database but other database can be used and
+			called using database.routine or any other format.
+
+		2. When database is not dropped routines associated are also 
+			dropped.
+
+		3. Functions cannot be recursive .
+
+
+ 36. Triggers
+
+ 	A trigger is a named database object that is associated with a table, and 
+ 	that activates when a particular event occurs for the table.
+
+ 	A trigger is defined to activate when a statement inserts, updates, or 
+ 	deletes rows in the associated table BEFORE or AFTER the query execution.
+
+ 		CREATE TRIGGER trigger_name ( BEFORE | AFTER )( INSERT| UPDATE | DELETE )
+ 		ON table_name
+ 		FOR EACH ROW 
+ 		BEGIN
+ 		--query - 1
+ 		--query - 2
+ 		END;
+ 		new_delim 
+
+ 	FOR EACH ROW 	: defines the trigger body;
+ 	
+ 	Within the trigger body, the OLD and NEW keywords enable you to access columns
+ 	in the rows affected by a trigger. 
+
+ 	  In INSERT only NEW can be used.
+ 	  In DELETE only OLD can be used.
+ 	  In UPDATE both OLD and NEW can be used.
+
+ 	limitations
+
+ 	  Cannot USE CALL to call a trigger.
+ 	  Cannot be used for transaction as it cannont explicitly or implicitly
+ 	  start at begin or end of a transaction. ( START TRANSACTION , COMMIT ) 
+
+ 	Triggers handle error 
+
+ 	  • If a BEFORE trigger fails, the operation on the corresponding row is not
+ 	  	  performed.
+	  	
+	  • A BEFORE trigger is activated by the attempt to insert or modify the row, 
+	  	  regardless of whether the attempt subsequently succeeds.
+	  	
+	  • An AFTER trigger is executed only if any BEFORE triggers and the row 
+	  	  operation execute successfully.
+	  	
+	  • An error during either a BEFORE or AFTER trigger results in failure of 
+	  	  the entire statement that caused trigger invocation.
+	    	
+	  • For transactional tables, failure of a statement should cause rollback 
+	  	  of all changes performed by the statement.
+
+ 37. Cursors
+
+ 	Cursor is a temporary work area created in system memory when a SQL 
+ 	statement is executed.A cursor is a set of rows together with a pointer 
+ 	that identifies a current row.
+ 	It is a database object to retrieve data from a result set one row at a 
+ 	time.
+ 	A cursor can hold more than one row, but can process only one row at a time. The set of rows the cursor holds is called the active set.
+
+ 	Types of cursors 
+
+ 	 Implicit 
+ 	  	
+ 	  	Generated by the system during INSERT UPDATE DELETE ( DML ).
+
+ 	 Explicit --
+		
+ 	 	Generated by user using SELECT command and the cursor contains
+ 	 	more than one rows.After fetching one row the cursor pointer 
+ 	 	moves to the next row.
+
+ 	Each cursor contains the followings 5 parts,
+
+    Declare Cursor: 
+
+    	DECLARE cursor_name CURSOR FOR select_statement; 
+
+    Open: 
+
+    	OPEN cursor_name;
+
+    Fetch: 
+
+    	FETCH cursor_name INTO var , var1 , var2 ... ;
+
+    Close: 
+
+    	CLOSE cursor_name ;
+
+    
+    A NOT FOUND handler handles the situation when the cursor could not
+    find any row.
+
+    	DECLARE CONTINUE HANDLER FOR NOT FOUND set var_found = 1 ;
+
+    Must appear after cursor declaration.
+
+    Ex.
+
+    DECLARE finished INTEGER DEFAULT 0;
+	DECLARE email varchar(255) DEFAULT "";
+	 
+	-- declare cursor for employee email
+	
+	DEClARE email_cursor CURSOR FOR 
+	SELECT email FROM employees;
+ 
+	-- declare NOT FOUND handler
+	
+	DECLARE CONTINUE HANDLER 
+	FOR NOT FOUND SET finished = 1; 
+
+	OPEN email_cursor;
+
+	get_email: LOOP
+	
+	FETCH email_cursor INTO v_email;
+	
+	IF v_finished = 1 THEN 
+	LEAVE get_email;
+	END IF;
+	
+	-- build email list
+	
+	SET email_list = CONCAT(v_email,";",email_list);
+	END LOOP get_email;
+
+	CLOSE email_cursor;
