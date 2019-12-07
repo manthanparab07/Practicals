@@ -280,3 +280,4 @@ Consider a transaction **T** initiated at site S , where the **transaction** **c
 
     -   **Disadvantage**
         -   Complex deadlock handling
+        -   

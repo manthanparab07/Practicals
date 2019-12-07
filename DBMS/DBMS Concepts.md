@@ -11,24 +11,24 @@ title: Database Concepts
 4. ##### Traditional File based System
 
 - Each Application defines and manages its own data.
-- It is a decentralized approach.
+- It is a decentralised approach.
 
 - ##### Drawbacks
 
 	1. `Separation and isolation of data`
 
 		- When data is isolated in different files then it becomes difficult to access data to be available.
-		- Such processing with file based is difficult which may involve synchronization of different files.
+		- Such processing with file based is difficult which may involve synchronisation of different files.
 
 	2. `Data Redundancy`
 
-		- As it is diificult to relate data in two files thus file base system have a lot of data redundancy.
+		- As it is difficult to relate data in two files thus file base system have a lot of data redundancy.
 		- Increases storage cost and increases processing time.
 
 	3. `Incompatible file formats`
 
-		- A program written in C generated a diiferent file format than a program written in COBOL thus it results in incompatibility.
-		- Thus additional file conversion may be required when using two applcation data which is time consuming.
+		- A program written in C generated a different file format than a program written in COBOL thus it results in incompatibility.
+		- Thus additional file conversion may be required when using two application data which is time consuming.
 
 	4. `No provision for security and integrity.`
 		
@@ -40,7 +40,7 @@ title: Database Concepts
 
 	-  It provides `controlled access` to the database. 
 	
-	- A `security` system, which prevents unauthorized users accessing the database;
+	- A `security` system, which prevents unauthorised users accessing the database;
 	
 	- An `integrity` system, which maintains the consistency of stored data;
 	
@@ -52,19 +52,19 @@ title: Database Concepts
 
 6. > #### Structure of Database Systems
 	
-- A system view called the schema and user views called subschemas.
+- A system view called the schema and user views called sub schemas.
 	
 - It involve three level :
 
 	1. External Level
-	 - In which DBMS interacts with the user to percieve the data.
+	 - In which DBMS interacts with the user to perceive the data.
 		
 	2. Internal Level
-	 - In which DBMS interacts with the OS to percieve the data.
+	 - In which DBMS interacts with the OS to perceive the data.
 	 - In involves how the data is actually stored using data structure and file organisation.
 
 	3. Conceptual Level
-	- Provides mapping and independence from exernal and internal level.
+	- Provides mapping and independence from external and internal level.
 
  ![da93f4b4.png](attachments/da93f4b4.png)
 
@@ -77,19 +77,19 @@ title: Database Concepts
 2. A user’s interaction with the database should be independent of storage considerations involves hashing,indexing.. etc. 
 
 3. The DBA should be able to change the database storage structures without affecting the users’ views.
-		
+	
 4. The internal structure of the database should be unaffected by changes to the physical aspects of storage, such as the changeover to a new storage device.
 
 > #### External Level
 
 - The users’ view of the database. This level describes the part of the database that is relevant to each user.
- 
+
 - The external level consists of a number of different external views of the database for each user.
-	  
+	
 - The external view includes only those entities, attributes, and     relationships in the “real world” that the user is interested in.
-	 
+	
 - Different views may have different representations of the same data.
-	  
+	
 - Ex. Same date can be represented as YYYY-MM-DD or DD Month Year for different user.
 
 > #### Conceptual Level
@@ -104,7 +104,7 @@ title: Database Concepts
 	+ the constraints on the data;
 	+ semantic information about the data;
 	+ security and integrity information.
-	  
+	
 - The conceptual level supports each external view, in that any data  available to a user must be contained in, or derivable from, the conceptual level.
 
 > #### Internal Level
@@ -112,9 +112,9 @@ title: Database Concepts
 - The physical representation of the database on the computer. 
 - This level describes how the data is stored in the database.
 
-- The internal level covers the physical implementation of the database to achieve optimal runtime performance and storage space utilization.
-	  
-- It covers the data structures and file organizations used to store data on storage devices.
+- The internal level covers the physical implementation of the database to achieve optimal run time performance and storage space utilisation.
+	
+- It covers the data structures and file organisations used to store data on storage devices.
 
 - It involves interaction with the OS.
 - Also involves data compression and data encryption techniques.
@@ -126,7 +126,7 @@ title: Database Concepts
 > ##### Physical Data Independence
 
 1. Using a new storage device like Hard Drive or Magnetic Tapes
-2. Modifying the file organization technique in the Database
+2. Modifying the file organisation technique in the Database
 3. Switching to different data structures.
 4. Changing the access method.
 5. Modifying indexes.
@@ -142,7 +142,7 @@ title: Database Concepts
 		Conceptual 	Schema
 		Internal 	Schema 
 
-- At the `highest` level, we have multiple external schemas (also called  subschemas) that correspond to different views of the data.
+- At the `highest` level, we have multiple external schemas (also called  sub schemas) that correspond to different views of the data.
 	
 - At the `conceptual` level describes all the entities, attributes, and  relationships together with integrity constraints.
 	
@@ -231,39 +231,37 @@ title: Database Concepts
 	3. Hierarchical			-- records and sets one parent node
 
 - > ##### Network and Hierarchical were developed a decade before Relational and thus they are linked to traditional file base system. 
-		
+	
 - In the network model, data is represented as collections of records, and  relationships are represented by sets.
 
 
 
 11. Keys 
 
-	
 1. > #### Super Key
 
 - Super key is a set of one or more than one KEYS that can be used to  identify a record uniquely in a table. 
 - Example: Primary key, Unique key, Alternate key are a subset of Super Keys.
-    
+  
 1. ##### Candidate Key
 
 	- A Candidate Key is a set of one or more COLUMNS that can identify a record uniquely in a table. 
 	- There can be multiple Candidate Keys in one table. 
 	- Each Candidate Key can work as Primary Key.
 
-    
 1. ##### Primary Key
 
     - Primary key is a set of one or more columns of a table that uniquely identify a record in a database table.
     -  It can not accept `null, duplicate` values. 
     -  Only one Candidate Key can be Primary Key.
-     
+    
 1. ##### Alternate key
 
     - An Alternate key is a key that can be work as a primary key.
 	- Basically, it is a candidate key that currently is not a primary key.
 
 1. ##### Composite/Compound Key
-    
+   
      - Composite Key is a combination of more than one columns of a table. 
      - It can be a Candidate key, Primary key.
      - Necessary when a single column is not identified as unique but a combination can.
@@ -272,7 +270,7 @@ title: Database Concepts
 
 	- A unique key is a set of one or more columns of a table that uniquely identify a record in a database table. 
 	- It is like Primary key but it can `accept only one null` value and it can not have duplicate values.
-    
+   
 1. ##### Foreign Key
 
 	- Foreign Key is a field in a database table that is Primary key in another table. 
@@ -283,9 +281,11 @@ title: Database Concepts
 12. > ##### Entity 
 
 - > #### Strong Entity
-	- An entity type is referred to as being strong if its existence does not depend upon the existence of another entity type.
-
+	
+- An entity type is referred to as being strong if its existence does not depend upon the existence of another entity type.
+	
 - > #### Weak Entity 
+	
 	- An Entity which does not have any sufficient attributes to form a primary key.
 
 

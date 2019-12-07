@@ -1065,13 +1065,13 @@ reference_option:
 	```mysql
 	   DECLARE variable_names[,] datatype(size)  [ DEFAULT default_value ] ;
 	```
-
+	
 	these local variables are displayed without @ prefix
-
+	
 	```mysql
 	   Select variable_names , variable_names ;
 	```
-
+	
 	*   DECLARE is permitted only inside a BEGIN ... END compound statement and must be at its start, before any other statements.
 	    *   Scope till END statement.
 	    *   Declarations must follow a certain order.
@@ -1130,7 +1130,7 @@ reference_option:
 		*   Used for variables which are passed as argument and are needed inside the procedure body.
 		*   Can be read inside the procedure body.
 		*   As it is call by value any changes made into the variable is not reflected into the original variable.
-
+	
 		    ```mysql
 		      CREATE  PROCEDURE  GetOfficeByCountry(
 		          IN  countryName  VARCHAR(255) )
@@ -1141,7 +1141,7 @@ reference_option:
 		*   Used as a variable to return a value after a procedure call.
 		*   The Variable cannot be read inside the procedure and it is only for write purposes.
 		*   Syntax
-
+	
 		    ```mysql
 		      CREATE  PROCEDURE  GetOrderCountByStatus  (
 		      IN orderStatus  VARCHAR(25),
@@ -1216,8 +1216,8 @@ reference_option:
        --query - 2
        END;
    new_delim 
-    ```
-    
+   ```
+   
     *   FOR EACH ROW : defines the trigger body;
 * Within the trigger body, the OLD and NEW keywords enable you to access columns in the rows affected by a trigger.
 
@@ -1279,39 +1279,39 @@ reference_option:
 * ##### Each cursor contains the followings 5 parts,
 
 	1. Declare Cursor:
-
+	
 		```mysql
 		 DECLARE cursor_name CURSOR FOR select_statement; 
 		```
-
+	
 	2. Open:
-
+	
 		```mysql
 		 OPEN cursor_name;
 		```
-
+	
 	3. Fetch:
-
+	
 		```mysql
 		 FETCH cursor_name INTO var , var1 , var2 ... ;
 		```
-
+	
 	4. Close:
-
+	
 		```mysql
 		 CLOSE cursor_name ;
 		```
-
+	
 	5. A `NOT FOUND` handler handles the situation when the cursor could not find any row.
-
+	
 		```mysql
 		 DECLARE CONTINUE HANDLER FOR NOT FOUND set var_found = 1 ;
 		```
-
+	
 	6.  Must appear after cursor declaration.
-
+	
 	    Ex.
-
+	
 	    ```mysql
 	DECLARE finished INTEGER DEFAULT 0; 
 	    DECLARE email varchar(255) DEFAULT "";
@@ -1332,10 +1332,11 @@ reference_option:
 	CLOSE email_cursor;
 	    ```
 
-	    
+
+​	    
 
 	1.  ##### Flow Control Statements
-
+	
 	    MySQL Does NoT Support `FOR` Loop
 
 * ##### `CASE` Statement
@@ -1382,8 +1383,8 @@ reference_option:
       [begin_label:] LOOP
           statement_list
   END LOOP [end_label]
-    ```
-    
+  ```
+  
     *   Loop is terminated with one of the following Ways
         1.  `LEAVE`
         2.  `RETURN`
@@ -1392,16 +1393,16 @@ reference_option:
 
     ```mysql
   ITERATE label
-    ```
-    
+  ```
+  
     *   Similar to `continue` in FOR LOOP as in case of OOP language.
     *   Means 'Start the Loop Again' .
 *   ###### LEAVE
 
     ```mysql
   LEAVE label
-    ```
-    
+  ```
+  
     *   Similar to `break` in OOP language.
 * #### Sample
 
@@ -1426,8 +1427,8 @@ reference_option:
           statement_list
       UNTIL search_condition
   END REPEAT [end_label]
-    ```
-    
+  ```
+  
     *   Executes Atleast Once.
 *   ###### WHILE
 
@@ -1490,15 +1491,14 @@ reference_option:
 **MySQL CONSTRAINTs are :**
 
 * ```mysql
+    
+    ```
 	*   NOT NULL
 	*   UNIQUE
 	*   PRIMARY KEY
 	*   FOREIGN KEY
 	*   CHECK		-- dep
 	*   DEFAULT
-	```
-
-	
 
 The difference between assertions and checks is a little more murky, many databases including `MySQL` don't even support assertions.
 
@@ -1535,8 +1535,8 @@ CREATE ASSERTION assertion_name CHECK
 
     ```mysql
   EXECUTE stmt_name USING @VAR , @VAR1 .... ;
-    ```
-    
+  ```
+  
     *   No of '?' inside the `PREPARE` statement and the variable passed must be equal.
 *   DEALLOCATE AFTER USE
 
