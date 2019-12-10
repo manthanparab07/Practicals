@@ -1,0 +1,33 @@
+Keyword 	Meaning
+
+:e!		discard all changes and return back to the saved state from file
+:q!		discard all changes and quit
+
+:w  filename	save the buffer into filename
+:w! filename	save the buffer into filename even if file already exists
+
+ h j k l	move the cursor left down up right 
+ [n] h l	move the cursor n characters left or right
+ [n] j k	move the cursor n lines below or above
+
+ 0 $		move at the begining and end of the line
+ 
+ w b		move forward and backward with	  considering punctuation (,.)	
+ W B 		move forward and backward without considering punctuation 
+ 
+ 4w 4b		move n words forward | backward
+ 4W 4B
+
+ set nu 	displays line number wile using vim
+ 
+ [n]G		move the cursor to line G default to the begining of file
+
+
+ i a c d	insert , append , copy , delete
+ y p 		yank(copy) , put (paste)
+
+ cw cb		delete word from cursor till before or backword
+ c[n]w,c[n]b	delete n words from cursor 
+ 
+
+
